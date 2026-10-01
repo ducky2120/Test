@@ -127,7 +127,7 @@ function makeFloor(f){
  for(let i=1;i<SIZE-1;i++){cells[key(10,i)].type='floor';cells[key(i,10)].type='floor'}
  const spots=[];
  for(let y=1;y<SIZE-1;y++)for(let x=1;x<SIZE-1;x++)if(cells[key(x,y)].type==='floor')spots.push([x,y]);
- function place(type,n){for(let i=0;i<n;i++){const p=spots[Math.floor(r()*spots.length)];cells[key(p[0],p[1])].type=type}}
+ function place(type,n){for(let i=0;i<n;i++){for(let tries=0;tries<80;tries++){const p=spots[Math.floor(r()*spots.length)],cell=cells[key(p[0],p[1])];if(cell.type==='floor'&&!(p[0]===10&&(p[1]===10||p[1]===SIZE-3))){cell.type=type;break}}}}
  if(f>1) cells[key(10,10)].type='stairsUp';
  cells[key(10,SIZE-3)].type=f===MAX_FLOOR?'altar':'stairsDown';
  place('chest',6);place('fountain',4);place('altar',3);place('portal',2);
@@ -136,11 +136,11 @@ function makeFloor(f){
 function ensureFloor(f){if(!state.maps[f])state.maps[f]=makeFloor(f);return state.maps[f]}
 function newState(name,cls,mode){
  const base={Vanguard:{str:15,dex:10,int:8,con:15},Arcanist:{str:8,dex:10,int:16,con:11},Wayfinder:{str:10,dex:16,int:10,con:11}}[cls];
- return {name,cls,mode,seed:Math.floor(Math.random()*1e9),floor:1,x:10,y:10,level:1,xp:0,gold:0,hp:base.con*3,mp:base.int*2,
+ return {name,cls,mode,seed:Math.floor(Math.random()*1e9),floor:1,x:10,y:10,level:1,xp:0,gold:0,hp:base.con*3,mp:base.int*2,gameOver:false,
  maxHp:base.con*3,maxMp:base.int*2,armor:0,weapon:0,potions:2,stats:base,maps:{},combat:null,kills:0,chests:0,deepest:1,
  checkpoint:null,quests:[{text:'Reach dungeon floor 5',done:false},{text:'Open 10 treasure chests',done:false},{text:'Defeat 25 monsters',done:false},{text:'Recover the Star of Telengard',done:false}],won:false};
 }
-function save(){if(state)localStorage.setItem('telengardReforgedSave',JSON.stringify(state))}
+function save(){if(state&&!state.gameOver)localStorage.setItem('telengardReforgedSave',JSON.stringify(state))}
 function load(){try{return JSON.parse(localStorage.getItem('telengardReforgedSave'))}catch(e){return null}}
 
 function roomText(cell){
@@ -217,7 +217,7 @@ function resolveHit(dmg,label){
 }
 function levelCheck(){while(state.xp>=xpNeed()){state.xp-=xpNeed();state.level++;state.maxHp+=5+Math.floor(state.stats.con/4);state.maxMp+=3+Math.floor(state.stats.int/5);state.hp=state.maxHp;state.mp=state.maxMp;state.stats.str+=state.level%2;state.stats.dex+=state.level%3===0?1:0;state.stats.int+=state.level%2===0?1:0;addLog('LEVEL UP! You are now level '+state.level+'.','gold')}}
 function die(){
- if(state.mode==='classic'){addLog('Your expedition ends in the dark.','bad');localStorage.removeItem('telengardReforgedSave');state.combat=null;setTimeout(()=>$('#startOverlay').classList.remove('hidden'),200);return}
+ if(state.mode==='classic'){addLog('Your expedition ends in the dark.','bad');state.gameOver=true;localStorage.removeItem('telengardReforgedSave');state.combat=null;$('#continueBtn').classList.add('hidden');setTimeout(()=>$('#startOverlay').classList.remove('hidden'),200);return}
  const cp=state.checkpoint||{floor:1,x:10,y:10,hp:state.maxHp,mp:state.maxMp};state.floor=cp.floor;state.x=cp.x;state.y=cp.y;state.hp=Math.max(1,Math.floor(state.maxHp*.65));state.mp=Math.floor(state.maxMp*.65);state.gold=Math.floor(state.gold*.8);state.combat=null;addLog('Defeated, you awaken at your last stair checkpoint. Some gold is gone.','bad');
 }
 function playerAction(kind){
