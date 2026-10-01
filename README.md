@@ -12,10 +12,12 @@ For a hosted version, enable GitHub Pages for this repository and serve from the
 
 - Procedurally generated 20-floor dungeon
 - 3 playable classes: Vanguard, Arcanist, Wayfinder
-- Turn-based combat with attack, power strike, spells, guarding, potions, and fleeing
+- Turn-based combat with attack, power strike, Arc Bolt, Soul Flare, guarding, potions, and fleeing
 - Character attributes, leveling, equipment upgrades, gold, and XP
-- Treasure chests, fountains, altars, portals, stairs, and random encounters
+- Treasure chests, fountains, altars, portals, stairs, random encounters, and boss floors every 5 levels
 - Fog-of-war automap
+- Town refuge with a shop for potions, weapon upgrades, armor upgrades, and healing
+- Unique artifacts dropped by bosses with permanent run-changing bonuses
 - Run goals and a final objective: recover the Star of Telengard
 - Adventurer mode with stair checkpoints
 - Classic mode with permadeath
