@@ -346,8 +346,9 @@ $$('.classpick').forEach(el=>el.onclick=()=>{$$('.classpick').forEach(x=>x.class
 $('#startBtn').onclick=()=>bootGame(newState($('#nameInput').value.trim()||'Adventurer',selectedClass,$('#modeInput').value));
 $('#continueBtn').onclick=()=>{const s=load();if(s)bootGame(s)};
 $('#newBtn').onclick=()=>{if(confirm('Abandon the current expedition and start a new one?')){$('#startOverlay').classList.remove('hidden');const s=load();$('#continueBtn').classList.toggle('hidden',!s)}};
-$('[data-move]').forEach(b=>b.onclick=()=>{const [x,y]=b.dataset.move.split(',').map(Number);move(x,y)});
+$$('[data-move]').forEach(b=>b.onclick=()=>{const [x,y]=b.dataset.move.split(',').map(Number);move(x,y)});
 $('[data-rest]').forEach(b=>b.onclick=rest);
+$('#map').addEventListener('click',e=>{const tile=e.target.closest('.cell.tappable');if(!tile||!state||state.combat)return;walkTo(Number(tile.dataset.x),Number(tile.dataset.y))});
 $('#restBtn').onclick=rest;$('#townBtn').onclick=showTown;$('#leaveTownBtn').onclick=()=>$('#townOverlay').classList.add('hidden');$$('[data-buy]').forEach(b=>b.onclick=()=>buy(b.dataset.buy));$('#resultNewBtn').onclick=()=>{$('#resultOverlay').classList.add('hidden');$('#startOverlay').classList.remove('hidden')};$('#attackBtn').onclick=()=>playerAction('attack');$('#powerBtn').onclick=()=>playerAction('power');$('#spellBtn').onclick=()=>playerAction('spell');$('#guardBtn').onclick=()=>playerAction('guard');$('#potionBtn').onclick=()=>playerAction('potion');$('#fleeBtn').onclick=()=>playerAction('flee');
 let touchStartX=0,touchStartY=0,touchStarted=false;
 const mapTouch=$('.mapwrap');
