@@ -16,6 +16,13 @@ h2,h3{margin:.2rem 0 .7rem;color:#e9c06c;text-transform:uppercase;letter-spacing
 .compass{display:grid;grid-template-columns:repeat(3,58px);justify-content:center;gap:7px;margin:16px 0}.compass button{height:52px;border:1px solid #9c7130;border-radius:50%;background:radial-gradient(circle,#243a4d,#0b141d);color:#ffd36b;box-shadow:inset 0 0 0 2px #241709,0 0 10px #0d78b233;font-weight:800}.inv{display:grid;gap:7px}.item{padding:9px;border:1px solid #5b4424;background:linear-gradient(180deg,#101b26,#091016);border-radius:7px;box-shadow:inset 0 0 8px #0007}.badge{display:inline-block;padding:2px 6px;border:1px solid #3a4a5f;border-radius:99px;font-size:12px;color:var(--gold);margin:2px 3px 2px 0}.shopgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.shopitem{border:1px solid #33445a;background:#111821;border-radius:10px;padding:12px}.shopitem button{width:100%;margin-top:8px}.boss{color:#ff9a6a}.artifact{color:#c69cff}.modal h2{margin-top:4px}.bigresult{text-align:center;font-size:clamp(30px,6vw,62px);letter-spacing:.08em;color:var(--gold);margin:10px 0}.subtleline{height:1px;background:#2a3645;margin:14px 0}
 .overlay{position:fixed;inset:0;background:radial-gradient(circle,#0c2234dd,#020406f4);display:grid;place-items:center;padding:20px;z-index:9}.modal{width:min(760px,100%);background:linear-gradient(180deg,#152433,#080d13);border:2px solid #a57931;border-radius:14px;padding:24px;box-shadow:inset 0 0 0 3px #251708,0 30px 80px #000;position:relative}.modal:before{content:'✦';position:absolute;top:5px;left:50%;transform:translateX(-50%);font-size:30px;color:#62c8ff;text-shadow:0 0 15px #2aaeff}.hidden{display:none!important}
 .startgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.classpick{border:1px solid #6f5225;border-radius:10px;padding:12px;background:linear-gradient(180deg,#101b25,#0a1118);cursor:pointer}.classpick.active{outline:2px solid #e8b950;background:linear-gradient(180deg,#1f3547,#0d1821);box-shadow:0 0 18px #178fd044}.kbd{border:1px solid #4a5664;border-bottom-width:2px;border-radius:5px;padding:1px 5px;background:#20262d}.footer{text-align:center;color:#748396;padding:12px}
+.tileIcon{position:relative;z-index:3;width:82%;height:82%;display:grid;place-items:center;filter:drop-shadow(0 2px 3px #000b)}
+.tileIcon svg{width:100%;height:100%;display:block}
+.cell.seen.chest:before,.cell.seen.fountain:before,.cell.seen.altar:before,.cell.seen.portal:before,.cell.seen.stairsUp:before,.cell.seen.stairsDown:before,.cell.here:before{content:none!important}
+.enemyPortrait{width:min(180px,42vw);aspect-ratio:1;margin:4px auto 12px;border:2px solid #8b6428;border-radius:16px;background:radial-gradient(circle,#1c3040,#070b0f 68%);display:grid;place-items:center;box-shadow:inset 0 0 24px #000,0 0 22px #0b74aa55;overflow:hidden}
+.enemyPortrait svg{width:88%;height:88%;filter:drop-shadow(0 7px 8px #000b)}
+.enemyPortrait.boss{border-color:#c56b3f;box-shadow:inset 0 0 28px #000,0 0 26px #d34d2666}
+.enemyPortrait.boss svg{width:94%;height:94%}
 .mobile-controls{display:none}
 @media(max-width:1100px){.grid{grid-template-columns:240px minmax(420px,1fr)}.sideright{grid-column:1/-1}.actions{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:760px){
@@ -74,6 +81,7 @@ button{min-height:48px;touch-action:manipulation}
       <div class="pad" style="padding-top:0">
         <div id="combat" class="hidden">
           <h3 id="enemyName" style="font-size:22px;text-align:center">Enemy</h3>
+          <div id="enemyPortrait" class="enemyPortrait" aria-hidden="true"></div>
           <div class="bar"><i id="enemyBar" class="hp"></i></div>
           <div class="actions">
             <button id="attackBtn">Attack</button><button id="powerBtn">Power</button><button id="spellBtn">Arc Bolt</button>
@@ -149,6 +157,29 @@ button{min-height:48px;touch-action:manipulation}
 'use strict';
 const SIZE=21, MAX_FLOOR=20, VIEW=4;
 const glyph={floor:'·',wall:' ',stairsDown:'▼',stairsUp:'▲',fountain:'≈',altar:'†',chest:'◆',portal:'◎'};
+
+const tileIcons={
+ chest:`<div class="tileIcon"><svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="cg" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#e7a52d"/><stop offset="1" stop-color="#8a4d0d"/></linearGradient></defs><path d="M10 27h44v25H10z" rx="4" fill="url(#cg)" stroke="#4a2607" stroke-width="4"/><path d="M13 27c1-12 9-18 19-18s18 6 19 18" fill="#a86312" stroke="#4a2607" stroke-width="4"/><path d="M29 26h7v27h-7z" fill="#f6d76d"/><rect x="27" y="34" width="11" height="10" rx="2" fill="#fff0a4" stroke="#5d3709" stroke-width="2"/></svg></div>`,
+ fountain:`<div class="tileIcon"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M20 49h24l5 8H15z" fill="#5c6974" stroke="#24313a" stroke-width="3"/><ellipse cx="32" cy="43" rx="19" ry="8" fill="#168cc1" stroke="#76dcff" stroke-width="3"/><path d="M32 11c-6 8-8 14-8 20a8 8 0 0 0 16 0c0-6-2-12-8-20z" fill="#6de5ff" stroke="#d5fbff" stroke-width="2"/><path d="M18 36c6-3 9-7 14-14 5 7 8 11 14 14" fill="none" stroke="#a8f1ff" stroke-width="3"/></svg></div>`,
+ altar:`<div class="tileIcon"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M15 46h34l6 10H9z" fill="#66594b" stroke="#2b241f" stroke-width="3"/><path d="M20 22h24l4 25H16z" fill="#7c6c58" stroke="#322a22" stroke-width="3"/><circle cx="32" cy="20" r="11" fill="#203846" stroke="#8ee6ff" stroke-width="3"/><path d="M32 11v18M23 20h18" stroke="#e7cc79" stroke-width="3"/><circle cx="32" cy="20" r="4" fill="#fff0a5"/></svg></div>`,
+ portal:`<div class="tileIcon"><svg viewBox="0 0 64 64" aria-hidden="true"><defs><radialGradient id="pg"><stop stop-color="#e9fbff"/><stop offset=".28" stop-color="#55d8ff"/><stop offset=".6" stop-color="#4960ff"/><stop offset="1" stop-color="#5c1c9d"/></radialGradient></defs><ellipse cx="32" cy="32" rx="21" ry="27" fill="none" stroke="#6a5cff" stroke-width="6"/><ellipse cx="32" cy="32" rx="15" ry="21" fill="url(#pg)" opacity=".96"/><path d="M22 20c14 3 16 19 3 26M41 17c-12 7-11 24 4 29" fill="none" stroke="#fff" stroke-width="2" opacity=".7"/></svg></div>`,
+ stairsDown:`<div class="tileIcon"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M12 18h15v9h10v9h10v9h9v9H12z" fill="#78838c" stroke="#29333a" stroke-width="3"/><path d="M51 11v20M43 24l8 8 8-8" fill="none" stroke="#73d7ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`,
+ stairsUp:`<div class="tileIcon"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M12 54h15v-9h10v-9h10v-9h9v-9H12z" fill="#78838c" stroke="#29333a" stroke-width="3"/><path d="M51 31V11M43 18l8-8 8 8" fill="none" stroke="#73d7ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`,
+ player:`<div class="tileIcon"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M22 17c0-9 20-9 20 0v8H22z" fill="#aeb8c0" stroke="#343b42" stroke-width="3"/><path d="M18 29l14-8 14 8-4 24H22z" fill="#7e8d99" stroke="#2a333a" stroke-width="3"/><path d="M20 31l-8 15 8 4M44 31l8 15-8 4" fill="none" stroke="#c6d0d7" stroke-width="5" stroke-linecap="round"/><path d="M24 22h16M28 17h8" stroke="#293238" stroke-width="3"/><path d="M22 54l-8 6M42 54l8 6" stroke="#8c9399" stroke-width="5" stroke-linecap="round"/><path d="M18 29l14-8 14 8-4 9H22z" fill="#9d221c" opacity=".85"/></svg></div>`
+};
+function monsterIcon(name){
+ const n=name.toLowerCase();
+ const wrap=(body)=>`<svg viewBox="0 0 96 96" aria-hidden="true">${body}</svg>`;
+ if(n.includes('rat'))return wrap(`<ellipse cx="48" cy="55" rx="29" ry="20" fill="#5d5048" stroke="#211b18" stroke-width="4"/><circle cx="31" cy="38" r="10" fill="#6b5a50"/><circle cx="65" cy="38" r="10" fill="#6b5a50"/><path d="M28 54l-18 8M68 54l18 8M47 57l-8 7h18z" fill="#c69c8e" stroke="#211b18" stroke-width="3"/><circle cx="38" cy="49" r="4" fill="#ff5147"/><circle cx="58" cy="49" r="4" fill="#ff5147"/><path d="M75 65c16 6 15 18 6 21" fill="none" stroke="#8b7264" stroke-width="4"/>`);
+ if(n.includes('skeleton'))return wrap(`<circle cx="48" cy="30" r="20" fill="#d9d2bd" stroke="#4b463b" stroke-width="4"/><circle cx="40" cy="27" r="5" fill="#191919"/><circle cx="56" cy="27" r="5" fill="#191919"/><path d="M44 38h8M48 50v31M29 60h38M35 80l-10 11M61 80l10 11" stroke="#d9d2bd" stroke-width="7" stroke-linecap="round"/><path d="M38 47h20" stroke="#4b463b" stroke-width="3"/>`);
+ if(n.includes('goblin')||n.includes('orc')||n.includes('ogre'))return wrap(`<path d="M18 28l20 7 10-18 10 18 20-7-9 25c5 21-8 34-21 34S22 74 27 53z" fill="#548f38" stroke="#20321a" stroke-width="4"/><path d="M25 45l-14-10 8 21M71 45l14-10-8 21" fill="#6dac43" stroke="#20321a" stroke-width="4"/><circle cx="37" cy="52" r="5" fill="#ffce4c"/><circle cx="59" cy="52" r="5" fill="#ffce4c"/><path d="M36 70l8-6 4 8 4-8 8 6" fill="none" stroke="#1d271a" stroke-width="4"/>`);
+ if(n.includes('wraith')||n.includes('lich')||n.includes('cult'))return wrap(`<path d="M20 83l7-45c3-18 39-18 42 0l7 45-14-8-14 10-14-10z" fill="#293246" stroke="#0b1019" stroke-width="4"/><path d="M31 39c3-23 31-23 34 0l-8 17H39z" fill="#111820"/><circle cx="40" cy="42" r="4" fill="#57f0d0"/><circle cx="56" cy="42" r="4" fill="#57f0d0"/><path d="M48 55v18M39 64h18" stroke="#6cefd6" stroke-width="3"/>`);
+ if(n.includes('drake')||n.includes('demon')||n.includes('basilisk')||n.includes('nightmare'))return wrap(`<path d="M48 18L29 9l5 18-18 9 15 11-9 22 22-7 4 24 4-24 22 7-9-22 15-11-18-9 5-18z" fill="#7f2b2d" stroke="#2d1012" stroke-width="4"/><path d="M29 51l19-16 19 16-7 25H36z" fill="#a73c34"/><circle cx="40" cy="53" r="5" fill="#ffd34d"/><circle cx="56" cy="53" r="5" fill="#ffd34d"/><path d="M39 68l9-5 9 5" stroke="#2b0e0f" stroke-width="4" fill="none"/>`);
+ if(n.includes('golem'))return wrap(`<path d="M27 24l17-10 18 8 9 22-5 30-20 12-22-10-5-31z" fill="#777d80" stroke="#2b3032" stroke-width="5"/><path d="M33 40l12-6 15 5-4 16-17 1z" fill="#92999c"/><circle cx="38" cy="46" r="4" fill="#70d9ff"/><circle cx="55" cy="46" r="4" fill="#70d9ff"/><path d="M35 66h24" stroke="#303536" stroke-width="4"/>`);
+ if(n.includes('mimic'))return wrap(`<path d="M15 39h66v40H15z" fill="#9b5615" stroke="#402208" stroke-width="5"/><path d="M20 39c2-21 54-21 56 0" fill="#b86b1c" stroke="#402208" stroke-width="5"/><path d="M25 54l10 9 10-9 10 9 12-10" fill="none" stroke="#fff0b0" stroke-width="6"/><circle cx="34" cy="39" r="5" fill="#f5d656"/><circle cx="62" cy="39" r="5" fill="#f5d656"/>`);
+ return wrap(`<ellipse cx="48" cy="54" rx="30" ry="27" fill="#557d38" stroke="#223118" stroke-width="4"/><circle cx="37" cy="49" r="5" fill="#f5df57"/><circle cx="59" cy="49" r="5" fill="#f5df57"/><path d="M36 68q12 8 24 0" fill="none" stroke="#1e2e16" stroke-width="4"/>`);
+}
+
 const roomNames=['Whispering Gallery','Broken Reliquary','Ashen Hall','Forgotten Barracks','Moonless Chapel','Salt Crypt','Iron Sepulcher','Cistern of Echoes','Hollow Archive','Obsidian Vault'];
 const monsters=[
  ['Giant Rat',8,3,4],['Goblin',12,4,7],['Skeleton',16,5,10],['Orc',22,7,15],['Wraith',28,9,22],
@@ -232,8 +263,8 @@ function renderMap(){
   const dist=Math.abs(x-state.x)+Math.abs(y-state.y);if(dist<=VIEW+1)cell.seen=true;
   d.className='cell '+(cell.seen?'seen '+cell.type:'unseen');
   d.dataset.x=x;d.dataset.y=y;
-  if(x===state.x&&y===state.y){d.className='cell seen '+cell.type+' here';d.setAttribute('aria-label','Player position')}
-  else if(cell.seen){d.setAttribute('aria-label',cell.type.replace(/([A-Z])/g,' $1').toLowerCase());if(cell.type!=='wall')d.classList.add('tappable')}
+  if(x===state.x&&y===state.y){d.className='cell seen '+cell.type+' here';d.setAttribute('aria-label','Player position');d.innerHTML=tileIcons.player}
+  else if(cell.seen){d.setAttribute('aria-label',cell.type.replace(/([A-Z])/g,' $1').toLowerCase());if(cell.type!=='wall')d.classList.add('tappable');if(tileIcons[cell.type])d.innerHTML=tileIcons[cell.type]}
   map.appendChild(d);
  }
  roomText(cells[key(state.x,state.y)]);
@@ -278,7 +309,7 @@ function startEncounter(boss){
 }
 function updateCombat(){
  const box=$('#combat');if(!state||!state.combat){box.classList.add('hidden');return}
- box.classList.remove('hidden');$('#enemyName').className=state.combat.boss?'boss':'';$('#enemyName').textContent=(state.combat.boss?'BOSS · ':'')+state.combat.name+' — '+state.combat.hp+'/'+state.combat.maxHp+' HP';$('#enemyBar').style.width=(100*state.combat.hp/state.combat.maxHp)+'%';
+ box.classList.remove('hidden');$('#enemyName').className=state.combat.boss?'boss':'';$('#enemyName').textContent=(state.combat.boss?'BOSS · ':'')+state.combat.name+' — '+state.combat.hp+'/'+state.combat.maxHp+' HP';$('#enemyPortrait').className='enemyPortrait'+(state.combat.boss?' boss':'');$('#enemyPortrait').innerHTML=monsterIcon(state.combat.name);$('#enemyBar').style.width=(100*state.combat.hp/state.combat.maxHp)+'%';
  $('#potionBtn').textContent='Potion ('+state.potions+')';$('#potionBtn').disabled=state.potions<=0;
 }
 function heroDamage(power){
