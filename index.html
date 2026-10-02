@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Telengard: Reforged</title>
 <style>
 :root{--bg:#05080d;--panel:#0d1620;--panel2:#121f2c;--ink:#f2ead5;--muted:#a9b2bf;--gold:#d8a94a;--gold2:#7a5520;--red:#d8463e;--green:#79c89b;--blue:#28a7ff;--blue2:#0b4f82;--line:#5a421f;--stone:#19222c;--stone2:#0c1218}
@@ -16,7 +16,24 @@ h2,h3{margin:.2rem 0 .7rem;color:#e9c06c;text-transform:uppercase;letter-spacing
 .compass{display:grid;grid-template-columns:repeat(3,58px);justify-content:center;gap:7px;margin:16px 0}.compass button{height:52px;border:1px solid #9c7130;border-radius:50%;background:radial-gradient(circle,#243a4d,#0b141d);color:#ffd36b;box-shadow:inset 0 0 0 2px #241709,0 0 10px #0d78b233;font-weight:800}.inv{display:grid;gap:7px}.item{padding:9px;border:1px solid #5b4424;background:linear-gradient(180deg,#101b26,#091016);border-radius:7px;box-shadow:inset 0 0 8px #0007}.badge{display:inline-block;padding:2px 6px;border:1px solid #3a4a5f;border-radius:99px;font-size:12px;color:var(--gold);margin:2px 3px 2px 0}.shopgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.shopitem{border:1px solid #33445a;background:#111821;border-radius:10px;padding:12px}.shopitem button{width:100%;margin-top:8px}.boss{color:#ff9a6a}.artifact{color:#c69cff}.modal h2{margin-top:4px}.bigresult{text-align:center;font-size:clamp(30px,6vw,62px);letter-spacing:.08em;color:var(--gold);margin:10px 0}.subtleline{height:1px;background:#2a3645;margin:14px 0}
 .overlay{position:fixed;inset:0;background:radial-gradient(circle,#0c2234dd,#020406f4);display:grid;place-items:center;padding:20px;z-index:9}.modal{width:min(760px,100%);background:linear-gradient(180deg,#152433,#080d13);border:2px solid #a57931;border-radius:14px;padding:24px;box-shadow:inset 0 0 0 3px #251708,0 30px 80px #000;position:relative}.modal:before{content:'✦';position:absolute;top:5px;left:50%;transform:translateX(-50%);font-size:30px;color:#62c8ff;text-shadow:0 0 15px #2aaeff}.hidden{display:none!important}
 .startgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.classpick{border:1px solid #6f5225;border-radius:10px;padding:12px;background:linear-gradient(180deg,#101b25,#0a1118);cursor:pointer}.classpick.active{outline:2px solid #e8b950;background:linear-gradient(180deg,#1f3547,#0d1821);box-shadow:0 0 18px #178fd044}.kbd{border:1px solid #4a5664;border-bottom-width:2px;border-radius:5px;padding:1px 5px;background:#20262d}.footer{text-align:center;color:#748396;padding:12px}
-@media(max-width:1100px){.grid{grid-template-columns:240px minmax(420px,1fr)}.sideright{grid-column:1/-1}.actions{grid-template-columns:repeat(3,1fr)}}@media(max-width:760px){.grid{grid-template-columns:1fr}.map{max-width:560px;margin:auto}.log{height:190px}.title{align-items:start;flex-direction:column}.sideleft{order:2}.center{order:1}.sideright{order:3;grid-column:auto}.shopgrid{grid-template-columns:1fr}.actions{grid-template-columns:repeat(2,1fr)}}
+.mobile-controls{display:none}
+@media(max-width:1100px){.grid{grid-template-columns:240px minmax(420px,1fr)}.sideright{grid-column:1/-1}.actions{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:760px){
+html,body{overscroll-behavior-y:contain}body{font-size:16px;-webkit-tap-highlight-color:transparent}
+button{min-height:48px;touch-action:manipulation}
+.shell{padding:6px max(8px,env(safe-area-inset-right)) calc(88px + env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left))}
+.grid{grid-template-columns:1fr;gap:8px}.title{align-items:start;flex-direction:column;padding:9px 12px;margin-bottom:8px}
+.title small{font-size:10px;letter-spacing:.11em}.title h1{font-size:clamp(24px,9vw,34px)}.title .muted{font-size:12px}
+.center{order:1}.sideleft{order:2}.sideright{order:3;grid-column:auto}.mapwrap{padding:8px 8px 10px;touch-action:none}
+.map{width:min(100%,72vh);max-width:560px;margin:auto;gap:2px;padding:4px;border-radius:10px}.cell{border-radius:2px}
+#roomTitle{font-size:17px!important;margin-top:8px!important}#roomDesc{font-size:13px;line-height:1.3;min-height:34px}
+.mobile-controls{display:grid;grid-template-columns:repeat(3,minmax(58px,82px));grid-template-rows:repeat(3,54px);gap:6px;justify-content:center;margin:10px auto 0;position:relative;z-index:2}
+.mobile-controls button{border-radius:14px;font-size:22px;font-weight:700;background:linear-gradient(180deg,#193247,#0b1822);border:1px solid #a57931;color:#f2ead5;box-shadow:inset 0 0 0 1px #263b4c,0 4px 12px #0007}
+.mobile-controls .mobile-rest{font-size:12px;letter-spacing:.08em;color:#f0c76d}.pad{padding:14px 12px}.sideleft .compass{display:none}
+.actions{grid-template-columns:repeat(2,1fr);gap:8px}.actions button{min-height:54px;font-size:16px}.log{height:150px;font-size:13px}
+.shopgrid,.startgrid{grid-template-columns:1fr}.modal{max-height:calc(100dvh - 18px);overflow:auto;padding:18px 14px;margin:max(6px,env(safe-area-inset-top)) 0 max(6px,env(safe-area-inset-bottom))}
+.overlay{padding:8px}.classpick{padding:10px}.footer{font-size:11px;padding:8px}}
+@media(max-width:390px){.map{width:100%}.mobile-controls{grid-template-columns:repeat(3,64px);grid-template-rows:repeat(3,50px)}.mapwrap{padding-left:5px;padding-right:5px}}
 </style>
 </head>
 <body>
@@ -48,6 +65,11 @@ h2,h3{margin:.2rem 0 .7rem;color:#e9c06c;text-transform:uppercase;letter-spacing
         <div id="map" class="map"></div>
         <div id="roomTitle" style="font-size:22px;margin-top:14px;color:#f0c76d;text-align:center;text-transform:uppercase;letter-spacing:.1em;text-shadow:0 1px 0 #2b1907">The upper crypts</div>
         <div id="roomDesc" class="muted" style="text-align:center;max-width:760px;margin:4px auto 0">Cold air moves through old stone passages.</div>
+        <div class="mobile-controls" aria-label="Touch movement controls">
+          <span></span><button type="button" data-move="0,-1" aria-label="Move up">▲</button><span></span>
+          <button type="button" data-move="-1,0" aria-label="Move left">◀</button><button type="button" class="mobile-rest" data-rest aria-label="Rest">REST</button><button type="button" data-move="1,0" aria-label="Move right">▶</button>
+          <span></span><button type="button" data-move="0,1" aria-label="Move down">▼</button><span></span>
+        </div>
       </div>
       <div class="pad" style="padding-top:0">
         <div id="combat" class="hidden">
@@ -308,8 +330,21 @@ $$('.classpick').forEach(el=>el.onclick=()=>{$$('.classpick').forEach(x=>x.class
 $('#startBtn').onclick=()=>bootGame(newState($('#nameInput').value.trim()||'Adventurer',selectedClass,$('#modeInput').value));
 $('#continueBtn').onclick=()=>{const s=load();if(s)bootGame(s)};
 $('#newBtn').onclick=()=>{if(confirm('Abandon the current expedition and start a new one?')){$('#startOverlay').classList.remove('hidden');const s=load();$('#continueBtn').classList.toggle('hidden',!s)}};
-$$('[data-move]').forEach(b=>b.onclick=()=>{const [x,y]=b.dataset.move.split(',').map(Number);move(x,y)});
+$('[data-move]').forEach(b=>b.onclick=()=>{const [x,y]=b.dataset.move.split(',').map(Number);move(x,y)});
+$('[data-rest]').forEach(b=>b.onclick=rest);
 $('#restBtn').onclick=rest;$('#townBtn').onclick=showTown;$('#leaveTownBtn').onclick=()=>$('#townOverlay').classList.add('hidden');$$('[data-buy]').forEach(b=>b.onclick=()=>buy(b.dataset.buy));$('#resultNewBtn').onclick=()=>{$('#resultOverlay').classList.add('hidden');$('#startOverlay').classList.remove('hidden')};$('#attackBtn').onclick=()=>playerAction('attack');$('#powerBtn').onclick=()=>playerAction('power');$('#spellBtn').onclick=()=>playerAction('spell');$('#guardBtn').onclick=()=>playerAction('guard');$('#potionBtn').onclick=()=>playerAction('potion');$('#fleeBtn').onclick=()=>playerAction('flee');
+let touchStartX=0,touchStartY=0,touchStarted=false;
+const mapTouch=$('.mapwrap');
+mapTouch.addEventListener('touchstart',e=>{
+ if(e.touches.length!==1)return;
+ touchStartX=e.touches[0].clientX;touchStartY=e.touches[0].clientY;touchStarted=true;
+},{passive:true});
+mapTouch.addEventListener('touchend',e=>{
+ if(!touchStarted||!state||state.combat||!$('#startOverlay').classList.contains('hidden')||!$('#townOverlay').classList.contains('hidden')||!$('#resultOverlay').classList.contains('hidden')){touchStarted=false;return}
+ const t=e.changedTouches[0],dx=t.clientX-touchStartX,dy=t.clientY-touchStartY;touchStarted=false;
+ if(Math.max(Math.abs(dx),Math.abs(dy))<34)return;
+ if(Math.abs(dx)>Math.abs(dy))move(dx>0?1:-1,0);else move(0,dy>0?1:-1);
+},{passive:true});
 window.addEventListener('keydown',e=>{
  const tag=(e.target&&e.target.tagName||'').toLowerCase();if(tag==='input'||tag==='select'||tag==='textarea')return;
  if(!$('#startOverlay').classList.contains('hidden')||!$('#townOverlay').classList.contains('hidden')||!$('#resultOverlay').classList.contains('hidden')||!state||state.combat)return;
