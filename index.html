@@ -5,402 +5,59 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Telengard: Reforged</title>
 <style>
-:root{--bg:#05080d;--panel:#0d1620;--panel2:#121f2c;--ink:#f2ead5;--muted:#a9b2bf;--gold:#d8a94a;--gold2:#7a5520;--red:#d8463e;--green:#79c89b;--blue:#28a7ff;--blue2:#0b4f82;--line:#5a421f;--stone:#19222c;--stone2:#0c1218}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% -10%,#0f3151 0,#08111b 33%,#030609 78%);color:var(--ink);font:15px/1.45 Georgia,'Times New Roman',serif;min-height:100vh;background-attachment:fixed}
-button,select{font:inherit}.shell{max-width:1480px;margin:auto;padding:14px 18px 24px;position:relative}.title{display:flex;align-items:end;justify-content:space-between;gap:16px;margin:0 0 12px;padding:10px 18px;border:1px solid #6f5223;border-radius:14px;background:linear-gradient(180deg,#111d29,#080d13);box-shadow:inset 0 0 0 2px #24190c,0 10px 30px #0008;position:relative;overflow:hidden}.title:before{content:'✦';position:absolute;left:50%;top:2px;transform:translateX(-50%);color:#68c7ff;text-shadow:0 0 18px #21a7ff;font-size:30px}.title h1{margin:0;font-size:clamp(24px,4vw,42px);letter-spacing:.09em;color:#f1c76f;text-shadow:0 2px 0 #3d2509,0 0 18px #a56c1466;font-variant:small-caps}.title small{color:#79cfff;text-transform:uppercase;letter-spacing:.18em}
-.grid{display:grid;grid-template-columns:280px minmax(520px,1fr) 320px;gap:12px}.card{background:linear-gradient(180deg,rgba(20,31,43,.98),rgba(8,14,20,.98));border:1px solid #8b6428;border-radius:14px;box-shadow:inset 0 0 0 2px #25180a,inset 0 0 24px #0009,0 14px 38px #000a;position:relative;overflow:hidden}.card:before{content:'✦';position:absolute;top:5px;left:50%;transform:translateX(-50%);color:#42b9ff;text-shadow:0 0 12px #1b93ff;z-index:1}.pad{padding:20px 16px 16px}
-h2,h3{margin:.2rem 0 .7rem;color:#e9c06c;text-transform:uppercase;letter-spacing:.08em;text-shadow:0 1px 0 #2b1907}.stat{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #263848}.bar{height:15px;background:#05080b;border:1px solid #7b5b28;border-radius:4px;overflow:hidden;margin:5px 0 11px;box-shadow:inset 0 2px 6px #000}.bar>i{display:block;height:100%;box-shadow:inset 0 1px 0 #ffffff55}.hp{background:linear-gradient(90deg,#7f1717,#ef4b42)}.mp{background:linear-gradient(90deg,#064c8b,#22a8ff)}.xp{background:linear-gradient(90deg,#8d5912,#f0c64e)}
-.mapwrap{padding:18px;background:radial-gradient(circle at 50% 20%,#1b4d70 0,#0b1b28 24%,#081018 54%,#05090e 100%);position:relative}.mapwrap:after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,#ff9d1510,#28a7ff10),radial-gradient(circle at 15% 55%,#ff8a1c22,transparent 26%),radial-gradient(circle at 82% 35%,#1aa7ff20,transparent 28%)}.map{position:relative;z-index:1;display:grid;grid-template-columns:repeat(9,1fr);aspect-ratio:1;gap:3px;background:#02060a;border:2px solid #a17631;padding:7px;border-radius:8px;box-shadow:inset 0 0 28px #000,0 0 24px #0a74b844}.cell{position:relative;display:grid;place-items:center;overflow:hidden;background:#05090d;border:1px solid #111b24;user-select:none;box-shadow:inset 0 0 12px #000c;min-width:0}.cell.tappable{cursor:pointer}.cell.tappable:hover{outline:2px solid #68c7ff;outline-offset:-2px;filter:brightness(1.15)}.cell.tappable:active{transform:scale(.96);filter:brightness(1.3)}.cell:before,.cell:after{content:'';position:absolute;pointer-events:none}.cell.unseen{background:#020406;border-color:#05080b}.cell.seen.floor{background:linear-gradient(135deg,#303842 0 8%,#202832 8% 42%,#171e26 42% 58%,#2a333d 58% 100%);border-color:#3c4650;box-shadow:inset 0 0 0 1px #10161c,inset 0 0 10px #0009}.cell.seen.floor:after{inset:18%;border-top:1px solid #46515b66;border-left:1px solid #0c111699;transform:skew(-8deg)}.cell.seen.wall{background:linear-gradient(145deg,#0b1117,#171f27 35%,#0b1117 36% 65%,#1a232c 66%);border-color:#27333e;box-shadow:inset 0 0 14px #000,0 0 4px #000}.cell.seen.wall:before{inset:10%;border:2px solid #33414d55;border-radius:2px;box-shadow:inset 0 0 6px #000}.cell.seen.chest{background:radial-gradient(circle,#6b4516 0 16%,#31210f 17% 35%,#13191e 36% 100%)}.cell.seen.chest:before{content:'✦';font-size:clamp(15px,2vw,24px);color:#ffd86d;text-shadow:0 0 8px #ffb21f}.cell.seen.fountain{background:radial-gradient(circle,#164b68,#0b2535 45%,#10171d 70%)}.cell.seen.fountain:before{content:'♒';font-size:clamp(15px,2vw,24px);color:#71dcff;text-shadow:0 0 10px #2bc5ff}.cell.seen.altar{background:radial-gradient(circle,#594214,#2b230f 38%,#11171c 65%)}.cell.seen.altar:before{content:'✝';font-size:clamp(15px,2vw,24px);color:#ffe0a0;text-shadow:0 0 8px #ffc85a}.cell.seen.portal{background:radial-gradient(circle,#6df3ff 0 8%,#1fa8ff 10% 20%,#5147ff 22% 33%,#101a27 36% 100%);box-shadow:inset 0 0 16px #2ab8ff88,0 0 12px #2a8fff66}.cell.seen.portal:before{content:'◉';font-size:clamp(15px,2vw,24px);color:white;text-shadow:0 0 10px #72d8ff}.cell.seen.stairsUp,.cell.seen.stairsDown{background:linear-gradient(180deg,#2b333b,#10161b)}.cell.seen.stairsUp:before,.cell.seen.stairsDown:before{font-size:clamp(16px,2.2vw,26px);color:#9fe7ff;text-shadow:0 0 8px #32b8ff}.cell.seen.stairsUp:before{content:'▲'}.cell.seen.stairsDown:before{content:'▼'}.cell.here{background:radial-gradient(circle,#f7fbff 0 10%,#5dd8ff 11% 25%,#18689a 27% 48%,#0d2637 50% 100%)!important;outline:2px solid #f6c95c;box-shadow:inset 0 0 14px #7eeaff,0 0 14px #35bfff;z-index:2}.cell.here:before{content:'♞';font-size:clamp(16px,2.3vw,27px);color:#fff4cf;text-shadow:0 0 7px white}.cell.here:after{inset:8%;border:1px solid #ffd97899;border-radius:50%;box-shadow:0 0 8px #ffd15b88}.map{background:radial-gradient(circle at 50% 50%,#09131d,#010305 72%);box-shadow:inset 0 0 34px #000,0 0 28px #0b8ac255}.mapwrap{overflow:hidden}.mapwrap:before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 45%,transparent 0 36%,#0006 68%,#000d 100%),linear-gradient(180deg,#0d345122,#0000 35%,#ff94100a 100%);pointer-events:none;z-index:0}.mapwrap:after{z-index:0}
-.log{height:250px;overflow:auto;background:linear-gradient(180deg,#081019,#05090e);border:1px solid #765524;border-radius:7px;padding:11px;box-shadow:inset 0 0 16px #000}.log p{margin:0 0 8px;border-bottom:1px solid #172331;padding-bottom:5px}.muted{color:var(--muted)}.good{color:var(--green)}.bad{color:var(--red)}.gold{color:var(--gold)}
-.actions{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:12px}.actions button,.btn{border:1px solid #9b7130;background:linear-gradient(180deg,#203040,#0c141c);color:#f6edd9;border-radius:8px;padding:11px 8px;cursor:pointer;box-shadow:inset 0 0 0 2px #24180a,inset 0 1px 0 #ffffff18;text-transform:uppercase;letter-spacing:.05em;font-weight:700}.actions button:hover,.btn:hover{background:linear-gradient(180deg,#2e4559,#111d28);color:#fff3c8;box-shadow:inset 0 0 0 2px #3b260c,0 0 14px #1b9cf033}.actions button:first-child{background:linear-gradient(180deg,#8a5b17,#4b2b0a);border-color:#edbd5a}.actions button:disabled{opacity:.35;cursor:not-allowed}
-.compass{display:grid;grid-template-columns:repeat(3,58px);justify-content:center;gap:7px;margin:16px 0}.compass button{height:52px;border:1px solid #9c7130;border-radius:50%;background:radial-gradient(circle,#243a4d,#0b141d);color:#ffd36b;box-shadow:inset 0 0 0 2px #241709,0 0 10px #0d78b233;font-weight:800}.inv{display:grid;gap:7px}.item{padding:9px;border:1px solid #5b4424;background:linear-gradient(180deg,#101b26,#091016);border-radius:7px;box-shadow:inset 0 0 8px #0007}.badge{display:inline-block;padding:2px 6px;border:1px solid #3a4a5f;border-radius:99px;font-size:12px;color:var(--gold);margin:2px 3px 2px 0}.shopgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.shopitem{border:1px solid #33445a;background:#111821;border-radius:10px;padding:12px}.shopitem button{width:100%;margin-top:8px}.boss{color:#ff9a6a}.artifact{color:#c69cff}.modal h2{margin-top:4px}.bigresult{text-align:center;font-size:clamp(30px,6vw,62px);letter-spacing:.08em;color:var(--gold);margin:10px 0}.subtleline{height:1px;background:#2a3645;margin:14px 0}
-.overlay{position:fixed;inset:0;background:radial-gradient(circle,#0c2234dd,#020406f4);display:grid;place-items:center;padding:20px;z-index:9}.modal{width:min(760px,100%);background:linear-gradient(180deg,#152433,#080d13);border:2px solid #a57931;border-radius:14px;padding:24px;box-shadow:inset 0 0 0 3px #251708,0 30px 80px #000;position:relative}.modal:before{content:'✦';position:absolute;top:5px;left:50%;transform:translateX(-50%);font-size:30px;color:#62c8ff;text-shadow:0 0 15px #2aaeff}.hidden{display:none!important}
-.startgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.classpick{border:1px solid #6f5225;border-radius:10px;padding:12px;background:linear-gradient(180deg,#101b25,#0a1118);cursor:pointer}.classpick.active{outline:2px solid #e8b950;background:linear-gradient(180deg,#1f3547,#0d1821);box-shadow:0 0 18px #178fd044}.kbd{border:1px solid #4a5664;border-bottom-width:2px;border-radius:5px;padding:1px 5px;background:#20262d}.footer{text-align:center;color:#748396;padding:12px}
-.tileIcon{position:relative;z-index:3;width:82%;height:82%;display:grid;place-items:center;filter:drop-shadow(0 2px 3px #000b)}
-.tileIcon svg{width:100%;height:100%;display:block}
-.cell.seen.chest:before,.cell.seen.fountain:before,.cell.seen.altar:before,.cell.seen.portal:before,.cell.seen.stairsUp:before,.cell.seen.stairsDown:before,.cell.here:before{content:none!important}
-.enemyPortrait{width:min(180px,42vw);aspect-ratio:1;margin:4px auto 12px;border:2px solid #8b6428;border-radius:16px;background:radial-gradient(circle,#1c3040,#070b0f 68%);display:grid;place-items:center;box-shadow:inset 0 0 24px #000,0 0 22px #0b74aa55;overflow:hidden}
-.enemyPortrait svg{width:88%;height:88%;filter:drop-shadow(0 7px 8px #000b)}
-.enemyPortrait.boss{border-color:#c56b3f;box-shadow:inset 0 0 28px #000,0 0 26px #d34d2666}
-.enemyPortrait.boss svg{width:94%;height:94%}
-.mobile-controls{display:none}
+:root{--ink:#efe7d2;--muted:#a6adb4;--gold:#e6b95a;--red:#e2564c;--green:#7dcc9d;--blue:#58c7ff;--panel:#0b1015;--line:#735325}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#030405;color:var(--ink);font:15px/1.42 Georgia,'Times New Roman',serif}body{background:radial-gradient(circle at 50% -10%,#152431 0,#070b0f 34%,#020304 78%);background-attachment:fixed}button,input,select{font:inherit}.shell{max-width:1480px;margin:auto;padding:12px 16px 24px}.title{display:flex;justify-content:space-between;gap:16px;align-items:end;padding:11px 16px;margin-bottom:10px;border:1px solid #6c4b21;border-radius:14px;background:linear-gradient(#151b20,#080b0e);box-shadow:inset 0 0 0 2px #231709,0 12px 35px #000a}.title h1{margin:0;color:#efc76c;font-size:clamp(24px,4vw,42px);letter-spacing:.08em;font-variant:small-caps;text-shadow:0 2px #3d2508,0 0 20px #a76d1844}.title small{color:#72c9ee;letter-spacing:.13em;text-transform:uppercase}.muted{color:var(--muted)}.gold{color:var(--gold)}.good{color:var(--green)}.bad{color:var(--red)}
+.grid{display:grid;grid-template-columns:270px minmax(520px,1fr) 310px;gap:10px}.card{background:linear-gradient(#11171d,#080c10);border:1px solid #795828;border-radius:14px;box-shadow:inset 0 0 0 2px #261a0b,inset 0 0 26px #000b,0 16px 40px #0009;overflow:hidden}.pad{padding:18px 15px}h2,h3{margin:.15rem 0 .7rem;color:#e9c26e;text-transform:uppercase;letter-spacing:.07em}.stat{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #26313a}.bar{height:15px;background:#040506;border:1px solid #715125;border-radius:4px;overflow:hidden;margin:5px 0 10px;box-shadow:inset 0 2px 6px #000}.bar i{display:block;height:100%}.hp{background:linear-gradient(90deg,#751913,#e95548)}.mp{background:linear-gradient(90deg,#07538d,#34b8ef)}.xp{background:linear-gradient(90deg,#895411,#e9bd4f)}
+.mapwrap{position:relative;padding:22px;background:radial-gradient(circle at 50% 42%,#261b10 0,#0e0b09 36%,#050607 76%);overflow:hidden}.mapwrap:before{content:'';position:absolute;inset:6px;border:9px solid transparent;border-radius:18px;background:linear-gradient(#3a3026,#15110d) padding-box,linear-gradient(135deg,#6f5738,#24190e 45%,#917040 55%,#21170d) border-box;box-shadow:inset 0 0 0 2px #080706,inset 0 0 24px #000,0 0 25px #000c;pointer-events:none}.mapwrap:after{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 8% 8%,#ff9a3038,transparent 16%),radial-gradient(circle at 92% 8%,#ff9a3038,transparent 16%),radial-gradient(circle at 8% 92%,#ff9a3038,transparent 16%),radial-gradient(circle at 92% 92%,#ff9a3038,transparent 16%),radial-gradient(circle at 50% 50%,transparent 40%,#0009 100%)}
+.torch{position:absolute;z-index:4;width:18px;height:34px;pointer-events:none}.torch:before{content:'';position:absolute;left:6px;bottom:0;width:6px;height:18px;background:linear-gradient(#47311b,#17100a);border-radius:3px}.torch:after{content:'';position:absolute;left:2px;top:0;width:14px;height:18px;background:radial-gradient(circle at 50% 70%,#fff6b3 0 13%,#ffbd3b 14% 38%,#f25a16 39% 66%,transparent 68%);filter:drop-shadow(0 0 7px #ff7b19) drop-shadow(0 0 14px #ff9b2b)}.t1{left:15px;top:14px}.t2{right:15px;top:14px}.t3{left:15px;bottom:18px}.t4{right:15px;bottom:18px}
+.map{position:relative;z-index:2;display:grid;grid-template-columns:repeat(9,1fr);aspect-ratio:1;gap:4px;margin:12px;background:#080807;padding:8px;border:2px solid #4e402f;border-radius:8px;box-shadow:inset 0 0 34px #000,0 0 18px #000b}.cell{position:relative;display:grid;place-items:center;min-width:0;overflow:hidden;border-radius:4px;user-select:none;transition:filter .12s,transform .08s,outline .12s}.cell:before,.cell:after{content:'';position:absolute;pointer-events:none}.cell.unseen{background:#050606;border:1px solid #0a0b0c;box-shadow:inset 0 0 13px #000}.cell.seen.floor,.cell.seen.chest,.cell.seen.fountain,.cell.seen.altar,.cell.seen.portal,.cell.seen.stairsUp,.cell.seen.stairsDown{background:radial-gradient(circle at 18% 26%,#88807322 0 2%,transparent 3%),radial-gradient(circle at 74% 64%,#0f0d0b55 0 3%,transparent 4%),linear-gradient(31deg,transparent 0 44%,#11100f 45% 47%,transparent 48% 100%),linear-gradient(146deg,#6a6257 0 8%,#514b43 9% 43%,#3f3b35 44% 58%,#5d574d 59% 100%);border:2px solid #211e1a;box-shadow:inset 0 0 0 1px #8a817155,inset 3px 3px 8px #b5aa9660,inset -5px -6px 11px #0c0b0a88,0 1px 3px #000}.cell.seen.floor:after,.cell.seen.chest:after,.cell.seen.fountain:after,.cell.seen.altar:after,.cell.seen.portal:after,.cell.seen.stairsUp:after,.cell.seen.stairsDown:after{inset:0;background:radial-gradient(circle at 18% 88%,#48602c42,transparent 18%),radial-gradient(circle at 88% 15%,#14110d44,transparent 21%);mix-blend-mode:multiply}
+.cell.seen.wall{background:radial-gradient(circle at 50% 48%,#0a0b0c 0 52%,#17191b 54% 63%,#393a37 65% 72%,#181817 74%);border:2px solid #202329;box-shadow:inset 0 0 20px #000,0 0 0 1px #4f5351}.cell.seen.wall:before{inset:11%;border:4px solid #30343a;border-radius:3px;box-shadow:inset 0 0 18px #000,0 0 0 1px #08090a}.cell.seen.wall:after{inset:16%;background:repeating-linear-gradient(125deg,transparent 0 13px,#17191c88 14px 16px,transparent 17px 28px);opacity:.45}.cell.tappable{cursor:pointer}.cell.tappable:hover{outline:2px solid #78d8ff;outline-offset:-2px;filter:brightness(1.18)}.cell.tappable:active{transform:scale(.96);filter:brightness(1.3)}
+.cell.seen.chest{box-shadow:inset 0 0 0 1px #8a817155,inset 3px 3px 8px #b5aa9660,inset -5px -6px 11px #0c0b0a88,0 0 18px #ffa62b30}.cell.seen.portal{box-shadow:inset 0 0 0 1px #8a817155,inset 0 0 18px #405fff77,0 0 14px #5369ff50}.cell.seen.fountain{box-shadow:inset 0 0 0 1px #8a817155,inset 0 0 16px #3ac9ff55}.cell.here{outline:3px solid #f0b74b;outline-offset:-2px;box-shadow:inset 0 0 18px #6dcfff88,0 0 18px #ffc85899!important;z-index:5}.cell.here:after{inset:8%;border:1px solid #8de5ff99;border-radius:50%;box-shadow:0 0 11px #5ed9ff99;background:radial-gradient(circle,#4bd6ff22,transparent 68%)}
+.tileIcon{position:relative;z-index:4;width:84%;height:84%;display:grid;place-items:center;filter:drop-shadow(0 4px 4px #000d)}.tileIcon svg{width:100%;height:100%;display:block}.cell.seen.chest:before,.cell.seen.fountain:before,.cell.seen.altar:before,.cell.seen.portal:before,.cell.seen.stairsUp:before,.cell.seen.stairsDown:before,.cell.here:before{content:none!important}
+#roomTitle{position:relative;z-index:3;font-size:22px;margin-top:10px;color:#edc670;text-align:center;text-transform:uppercase;letter-spacing:.09em;text-shadow:0 2px #201407}#roomDesc,#mapHint{position:relative;z-index:3;text-align:center}#mapHint{font-size:12px;margin-top:5px}.log{height:245px;overflow:auto;background:#050708;border:1px solid #684b23;border-radius:7px;padding:10px;box-shadow:inset 0 0 15px #000}.log p{margin:0 0 7px;padding-bottom:5px;border-bottom:1px solid #172027}
+.actions{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin-top:10px}.actions button,.btn{border:1px solid #956c2d;background:linear-gradient(#26323b,#0d1419);color:#f2e8d2;border-radius:8px;padding:10px 8px;text-transform:uppercase;letter-spacing:.04em;font-weight:700;box-shadow:inset 0 0 0 2px #271a0a;cursor:pointer}.actions button:first-child{background:linear-gradient(#8d5a15,#4b2b09);border-color:#e6b85a}.actions button:disabled{opacity:.35}.compass{display:grid;grid-template-columns:repeat(3,56px);justify-content:center;gap:6px;margin:14px 0}.compass button{height:50px;border:1px solid #8e672d;border-radius:50%;background:#101820;color:#edc76d}.item{padding:8px;border:1px solid #594320;background:linear-gradient(#111921,#080d11);border-radius:7px;margin-bottom:6px}.badge{display:inline-block;padding:2px 6px;border:1px solid #3b4852;border-radius:999px;font-size:12px;color:var(--gold);margin:2px}.shopgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.shopitem{border:1px solid #34414a;background:#0d141a;border-radius:9px;padding:12px}.shopitem button{width:100%;margin-top:7px}.enemyPortrait{width:min(210px,48vw);aspect-ratio:1;margin:5px auto 11px;border:2px solid #795829;border-radius:16px;background:radial-gradient(circle at 50% 38%,#34302a,#11100f 43%,#050607 74%);display:grid;place-items:center;box-shadow:inset 0 0 28px #000,0 0 22px #8b642744;overflow:hidden}.enemyPortrait svg{width:90%;height:90%;filter:drop-shadow(0 7px 8px #000c)}.enemyPortrait.boss{border-color:#bd633f;box-shadow:inset 0 0 28px #000,0 0 26px #c94a2d66}.boss{color:#ff9b70}.artifact{color:#cf9dff}.overlay{position:fixed;inset:0;background:radial-gradient(circle,#0e1c26ee,#010203f7);display:grid;place-items:center;padding:16px;z-index:20}.modal{width:min(760px,100%);max-height:calc(100dvh - 24px);overflow:auto;background:linear-gradient(#15212a,#080d10);border:2px solid #91682e;border-radius:14px;padding:22px;box-shadow:inset 0 0 0 3px #241707,0 30px 80px #000}.hidden{display:none!important}.startgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.classpick{border:1px solid #654b25;border-radius:9px;padding:12px;background:#0c1318;cursor:pointer}.classpick.active{outline:2px solid #e4b54b;background:#142531}.footer{text-align:center;color:#69737c;padding:10px}.mobile-controls{display:none}
 @media(max-width:1100px){.grid{grid-template-columns:240px minmax(420px,1fr)}.sideright{grid-column:1/-1}.actions{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:760px){
-html,body{overscroll-behavior-y:contain}body{font-size:16px;-webkit-tap-highlight-color:transparent}
-button{min-height:48px;touch-action:manipulation}
-.shell{padding:6px max(8px,env(safe-area-inset-right)) calc(88px + env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left))}
-.grid{grid-template-columns:1fr;gap:8px}.title{align-items:start;flex-direction:column;padding:9px 12px;margin-bottom:8px}
-.title small{font-size:10px;letter-spacing:.11em}.title h1{font-size:clamp(24px,9vw,34px)}.title .muted{font-size:12px}
-.center{order:1}.sideleft{order:2}.sideright{order:3;grid-column:auto}.mapwrap{padding:8px 8px 10px;touch-action:none}
-.map{width:min(100%,72vh);max-width:560px;margin:auto;gap:2px;padding:4px;border-radius:10px}.cell{border-radius:2px}
-#roomTitle{font-size:17px!important;margin-top:8px!important}#roomDesc{font-size:13px;line-height:1.3;min-height:34px}
-.mobile-controls{display:none!important}
-.mobile-controls button{border-radius:14px;font-size:22px;font-weight:700;background:linear-gradient(180deg,#193247,#0b1822);border:1px solid #a57931;color:#f2ead5;box-shadow:inset 0 0 0 1px #263b4c,0 4px 12px #0007}
-.mobile-controls .mobile-rest{font-size:12px;letter-spacing:.08em;color:#f0c76d}.pad{padding:14px 12px}.sideleft .compass{display:none}
-.actions{grid-template-columns:repeat(2,1fr);gap:8px}.actions button{min-height:54px;font-size:16px}.log{height:150px;font-size:13px}
-.shopgrid,.startgrid{grid-template-columns:1fr}.modal{max-height:calc(100dvh - 18px);overflow:auto;padding:18px 14px;margin:max(6px,env(safe-area-inset-top)) 0 max(6px,env(safe-area-inset-bottom))}
-.overlay{padding:8px}.classpick{padding:10px}.footer{font-size:11px;padding:8px}}
-@media(max-width:390px){.map{width:100%}.mobile-controls{grid-template-columns:repeat(3,64px);grid-template-rows:repeat(3,50px)}.mapwrap{padding-left:5px;padding-right:5px}}
+@media(max-width:760px){body{font-size:16px}.shell{padding:5px max(6px,env(safe-area-inset-right)) calc(70px + env(safe-area-inset-bottom)) max(6px,env(safe-area-inset-left))}.grid{grid-template-columns:1fr;gap:7px}.center{order:1}.sideleft{order:2}.sideright{order:3;grid-column:auto}.title{align-items:start;flex-direction:column;padding:8px 10px}.title h1{font-size:clamp(24px,9vw,34px)}.title small{font-size:10px}.mapwrap{padding:11px 7px 9px;touch-action:none}.mapwrap:before{inset:2px;border-width:6px}.map{width:min(100%,72vh);max-width:560px;margin:7px auto;gap:3px;padding:5px}.cell{border-radius:3px}.torch{transform:scale(.72)}.t1{left:5px;top:4px}.t2{right:5px;top:4px}.t3{left:5px;bottom:10px}.t4{right:5px;bottom:10px}#roomTitle{font-size:17px}.actions{grid-template-columns:repeat(2,1fr)}.actions button{min-height:52px;font-size:16px}.log{height:145px;font-size:13px}.pad{padding:13px 11px}.sideleft .compass{display:none}.shopgrid,.startgrid{grid-template-columns:1fr}.overlay{padding:7px}.modal{padding:17px 13px}.footer{font-size:11px}.title .muted{font-size:12px}}
 </style>
 </head>
 <body>
 <div class="shell">
-  <div class="title"><div><small>A modern dungeon crawler inspired by the 1982 classic</small><h1>TELENGARD: REFORGED</h1></div><div class="muted">Move: <span class="kbd">WASD</span> / arrows · Save: automatic</div></div>
-  <div class="grid">
-    <aside class="card pad sideleft">
-      <h3 id="heroName">Adventurer</h3>
-      <div class="stat"><span>Class</span><b id="heroClass">—</b></div>
-      <div class="stat"><span>Floor</span><b id="floor">1</b></div>
-      <div class="stat"><span>Level</span><b id="level">1</b></div>
-      <div class="stat"><span>🪙 Gold</span><b id="gold">0</b></div>
-      <div class="stat"><span>🛡 Armor</span><b id="armor">0</b></div>
-      <p>HP <b id="hpText"></b></p><div class="bar"><i id="hpBar" class="hp"></i></div>
-      <p>Mana <b id="mpText"></b></p><div class="bar"><i id="mpBar" class="mp"></i></div>
-      <p>XP <b id="xpText"></b></p><div class="bar"><i id="xpBar" class="xp"></i></div>
-      <h3>Attributes</h3>
-      <div id="attrs"></div>
-      <div class="compass">
-        <span></span><button data-move="0,-1">▲</button><span></span>
-        <button data-move="-1,0">◀</button><button id="restBtn">REST</button><button data-move="1,0">▶</button>
-        <span></span><button data-move="0,1">▼</button><span></span>
-      </div>
-      <button id="townBtn" class="btn" style="width:100%;margin-bottom:8px">Return to town</button><button id="newBtn" class="btn" style="width:100%">New run</button>
-    </aside>
-
-    <main class="card center">
-      <div class="mapwrap">
-        <div id="map" class="map"></div>
-        <div id="roomTitle" style="font-size:22px;margin-top:14px;color:#f0c76d;text-align:center;text-transform:uppercase;letter-spacing:.1em;text-shadow:0 1px 0 #2b1907">The upper crypts</div>
-        <div id="roomDesc" class="muted" style="text-align:center;max-width:760px;margin:4px auto 0">Cold air moves through old stone passages.</div><div id="mapHint" class="muted" style="position:relative;z-index:2;text-align:center;font-size:12px;margin-top:6px">Tap a visible tile to move there · swipe also works</div>
-        <div class="mobile-controls" aria-label="Touch movement controls">
-          <span></span><button type="button" data-move="0,-1" aria-label="Move up">▲</button><span></span>
-          <button type="button" data-move="-1,0" aria-label="Move left">◀</button><button type="button" class="mobile-rest" data-rest aria-label="Rest">REST</button><button type="button" data-move="1,0" aria-label="Move right">▶</button>
-          <span></span><button type="button" data-move="0,1" aria-label="Move down">▼</button><span></span>
-        </div>
-      </div>
-      <div class="pad" style="padding-top:0">
-        <div id="combat" class="hidden">
-          <h3 id="enemyName" style="font-size:22px;text-align:center">Enemy</h3>
-          <div id="enemyPortrait" class="enemyPortrait" aria-hidden="true"></div>
-          <div class="bar"><i id="enemyBar" class="hp"></i></div>
-          <div class="actions">
-            <button id="attackBtn">Attack</button><button id="powerBtn">Power</button><button id="spellBtn">Arc Bolt</button>
-            <button id="guardBtn">Guard</button><button id="potionBtn">Potion</button><button id="fleeBtn">Flee</button>
-          </div>
-        </div>
-        <h3>Chronicle</h3>
-        <div id="log" class="log"></div>
-      </div>
-    </main>
-
-    <aside class="card pad sideright">
-      <h3>Inventory</h3>
-      <div id="inventory" class="inv"></div><h3 style="margin-top:16px">Spells & relics</h3><div id="relics" class="inv"></div>
-      <h3 style="margin-top:16px">Run goals</h3>
-      <div id="quests" class="inv"></div>
-      <h3 style="margin-top:16px">Controls</h3>
-      <p class="muted">Explore the procedurally generated floors, descend, grow stronger, and recover the Star of Telengard from the deepest vault.</p>
-      <p class="muted">Modern additions: automap, class abilities, quests, equipment upgrades, checkpoints, and a forgiving Adventurer mode.</p>
-    </aside>
-  </div>
-  <div class="footer">Original implementation · no external libraries · progress stored locally in your browser</div>
-</div>
-
-<div id="startOverlay" class="overlay">
-  <div class="modal">
-    <div style="text-align:center;margin-bottom:14px"><div style="font-size:clamp(28px,6vw,58px);line-height:.95;color:#efc96f;text-shadow:0 2px 0 #3c2509,0 0 25px #1aa8ff55;letter-spacing:.08em;font-variant:small-caps">TELENGARD</div><div style="font-size:clamp(18px,3vw,30px);letter-spacing:.28em;color:#d8e5ef">REFORGED</div><div class="gold" style="margin-top:10px;letter-spacing:.15em">NEW EXPEDITION</div></div><h2>Create your adventurer</h2>
-    <label>Name<br><input id="nameInput" value="Aldric" maxlength="18" style="width:100%;margin:5px 0 14px;padding:10px;background:#0d1218;color:white;border:1px solid #33445a;border-radius:8px"></label>
-    <div id="classPicks" class="startgrid">
-      <div class="classpick active" data-class="Vanguard"><b>Vanguard</b><p class="muted">Durable melee fighter. Power Strike can stagger foes.</p></div>
-      <div class="classpick" data-class="Arcanist"><b>Arcanist</b><p class="muted">High mana and spell damage. Arc Bolt ignores armor.</p></div>
-      <div class="classpick" data-class="Wayfinder"><b>Wayfinder</b><p class="muted">Fast, lucky explorer. Higher flee and treasure odds.</p></div>
-    </div>
-    <label style="display:block;margin:14px 0">Mode
-      <select id="modeInput" style="width:100%;margin-top:5px;padding:10px;background:#0d1218;color:white;border:1px solid #33445a;border-radius:8px">
-        <option value="adventurer">Adventurer — defeat returns you to your last stair checkpoint</option>
-        <option value="classic">Classic — death ends the run</option>
-      </select>
-    </label>
-    <button id="startBtn" class="btn" style="width:100%;padding:12px">Enter Telengard</button>
-    <button id="continueBtn" class="btn hidden" style="width:100%;padding:12px;margin-top:8px">Continue saved expedition</button>
-  </div>
-</div>
-
-<div id="townOverlay" class="overlay hidden">
-  <div class="modal">
-    <div class="gold">THE LANTERN & ANVIL</div>
-    <h2>Town Refuge</h2>
-    <p class="muted">Spend dungeon gold, recover, and prepare for the next descent.</p>
-    <div id="townStats"></div>
-    <div class="shopgrid">
-      <div class="shopitem"><b>Healing Potion</b><p class="muted">Restore 45% HP during combat.</p><button class="btn" data-buy="potion">Buy · 25g</button></div>
-      <div class="shopitem"><b>Weapon Temper</b><p class="muted">Permanent +1 weapon damage.</p><button class="btn" data-buy="weapon">Buy · 90g</button></div>
-      <div class="shopitem"><b>Armor Reinforcement</b><p class="muted">Permanent +1 armor.</p><button class="btn" data-buy="armor">Buy · 90g</button></div>
-      <div class="shopitem"><b>Full Recovery</b><p class="muted">Restore HP and mana to maximum.</p><button class="btn" data-buy="heal">Rest · 40g</button></div>
-    </div>
-    <button id="leaveTownBtn" class="btn" style="width:100%;margin-top:14px">Return to dungeon</button>
-  </div>
-</div>
-
-<div id="resultOverlay" class="overlay hidden">
-  <div class="modal">
-    <div id="resultKicker" class="gold">EXPEDITION ENDED</div>
-    <div id="resultTitle" class="bigresult">DEFEATED</div>
-    <p id="resultText" class="muted"></p>
-    <div id="resultStats"></div>
-    <button id="resultNewBtn" class="btn" style="width:100%;margin-top:14px">Begin a new expedition</button>
-  </div>
-</div>
-
+<div class="title"><div><small>A modern dungeon crawler inspired by the 1982 classic</small><h1>TELENGARD: REFORGED</h1></div><div class="muted">Tap the map to move · Save: automatic</div></div>
+<div class="grid">
+<aside class="card pad sideleft"><h3 id="heroName">Adventurer</h3><div class="stat"><span>Class</span><b id="heroClass">—</b></div><div class="stat"><span>Floor</span><b id="floor">1</b></div><div class="stat"><span>Level</span><b id="level">1</b></div><div class="stat"><span>🪙 Gold</span><b id="gold">0</b></div><div class="stat"><span>🛡 Armor</span><b id="armor">0</b></div><p>HP <b id="hpText"></b></p><div class="bar"><i id="hpBar" class="hp"></i></div><p>Mana <b id="mpText"></b></p><div class="bar"><i id="mpBar" class="mp"></i></div><p>XP <b id="xpText"></b></p><div class="bar"><i id="xpBar" class="xp"></i></div><h3>Attributes</h3><div id="attrs"></div><div class="compass"><span></span><button data-move="0,-1">▲</button><span></span><button data-move="-1,0">◀</button><button id="restBtn">REST</button><button data-move="1,0">▶</button><span></span><button data-move="0,1">▼</button><span></span></div><button id="townBtn" class="btn" style="width:100%;margin-bottom:8px">Return to town</button><button id="newBtn" class="btn" style="width:100%">New run</button></aside>
+<main class="card center"><div class="mapwrap"><i class="torch t1"></i><i class="torch t2"></i><i class="torch t3"></i><i class="torch t4"></i><div id="map" class="map"></div><div id="roomTitle">The upper crypts</div><div id="roomDesc" class="muted">Cold air moves through old stone passages.</div><div id="mapHint" class="muted">Tap a visible floor tile to move there · swipe also works</div></div><div class="pad" style="padding-top:0"><div id="combat" class="hidden"><h3 id="enemyName" style="font-size:22px;text-align:center">Enemy</h3><div id="enemyPortrait" class="enemyPortrait"></div><div class="bar"><i id="enemyBar" class="hp"></i></div><div class="actions"><button id="attackBtn">Attack</button><button id="powerBtn">Power</button><button id="spellBtn">Arc Bolt</button><button id="guardBtn">Guard</button><button id="potionBtn">Potion</button><button id="fleeBtn">Flee</button></div></div><h3>Chronicle</h3><div id="log" class="log"></div></div></main>
+<aside class="card pad sideright"><h3>Inventory</h3><div id="inventory"></div><h3 style="margin-top:16px">Spells & relics</h3><div id="relics"></div><h3 style="margin-top:16px">Run goals</h3><div id="quests"></div><h3 style="margin-top:16px">Controls</h3><p class="muted">Tap any explored walkable tile. Your character automatically follows the safest known path until an encounter or floor transition interrupts the route.</p></aside>
+</div><div class="footer">Progress stored locally in your browser</div></div>
+<div id="startOverlay" class="overlay"><div class="modal"><div style="text-align:center;margin-bottom:12px"><div style="font-size:clamp(30px,6vw,58px);color:#efc96f;letter-spacing:.08em;font-variant:small-caps">TELENGARD</div><div style="font-size:clamp(18px,3vw,28px);letter-spacing:.28em">REFORGED</div></div><h2>Create your adventurer</h2><label>Name<br><input id="nameInput" value="Aldric" maxlength="18" style="width:100%;margin:5px 0 14px;padding:10px;background:#0a0f13;color:white;border:1px solid #38434c;border-radius:7px"></label><div class="startgrid"><div class="classpick active" data-class="Vanguard"><b>Vanguard</b><p class="muted">Durable melee fighter.</p></div><div class="classpick" data-class="Arcanist"><b>Arcanist</b><p class="muted">High mana and spell damage.</p></div><div class="classpick" data-class="Wayfinder"><b>Wayfinder</b><p class="muted">Fast, lucky explorer.</p></div></div><label style="display:block;margin:14px 0">Mode<select id="modeInput" style="width:100%;margin-top:5px;padding:10px;background:#0a0f13;color:white;border:1px solid #38434c;border-radius:7px"><option value="adventurer">Adventurer — checkpoint on defeat</option><option value="classic">Classic — permadeath</option></select></label><button id="startBtn" class="btn" style="width:100%">Enter Telengard</button><button id="continueBtn" class="btn hidden" style="width:100%;margin-top:8px">Continue saved expedition</button></div></div>
+<div id="townOverlay" class="overlay hidden"><div class="modal"><div class="gold">THE LANTERN & ANVIL</div><h2>Town Refuge</h2><p class="muted">Spend dungeon gold, recover, and prepare for the next descent.</p><div id="townStats"></div><div class="shopgrid"><div class="shopitem"><b>Healing Potion</b><p class="muted">Restore 45% HP in combat.</p><button class="btn" data-buy="potion">Buy · 25g</button></div><div class="shopitem"><b>Weapon Temper</b><p class="muted">Permanent +1 weapon damage.</p><button class="btn" data-buy="weapon">Buy · 90g</button></div><div class="shopitem"><b>Armor Reinforcement</b><p class="muted">Permanent +1 armor.</p><button class="btn" data-buy="armor">Buy · 90g</button></div><div class="shopitem"><b>Full Recovery</b><p class="muted">Restore HP and mana.</p><button class="btn" data-buy="heal">Rest · 40g</button></div></div><button id="leaveTownBtn" class="btn" style="width:100%;margin-top:12px">Return to dungeon</button></div></div>
+<div id="resultOverlay" class="overlay hidden"><div class="modal"><div id="resultKicker" class="gold">EXPEDITION ENDED</div><div id="resultTitle" style="text-align:center;font-size:clamp(32px,6vw,58px);letter-spacing:.08em;margin:10px 0">DEFEATED</div><p id="resultText" class="muted"></p><div id="resultStats"></div><button id="resultNewBtn" class="btn" style="width:100%;margin-top:12px">Begin a new expedition</button></div></div>
 <script>
-(function(){
-'use strict';
-const SIZE=21, MAX_FLOOR=20, VIEW=4;
-const glyph={floor:'·',wall:' ',stairsDown:'▼',stairsUp:'▲',fountain:'≈',altar:'†',chest:'◆',portal:'◎'};
-
-const tileIcons={
- chest:`<div class="tileIcon"><svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="cg" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#e7a52d"/><stop offset="1" stop-color="#8a4d0d"/></linearGradient></defs><path d="M10 27h44v25H10z" rx="4" fill="url(#cg)" stroke="#4a2607" stroke-width="4"/><path d="M13 27c1-12 9-18 19-18s18 6 19 18" fill="#a86312" stroke="#4a2607" stroke-width="4"/><path d="M29 26h7v27h-7z" fill="#f6d76d"/><rect x="27" y="34" width="11" height="10" rx="2" fill="#fff0a4" stroke="#5d3709" stroke-width="2"/></svg></div>`,
- fountain:`<div class="tileIcon"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M20 49h24l5 8H15z" fill="#5c6974" stroke="#24313a" stroke-width="3"/><ellipse cx="32" cy="43" rx="19" ry="8" fill="#168cc1" stroke="#76dcff" stroke-width="3"/><path d="M32 11c-6 8-8 14-8 20a8 8 0 0 0 16 0c0-6-2-12-8-20z" fill="#6de5ff" stroke="#d5fbff" stroke-width="2"/><path d="M18 36c6-3 9-7 14-14 5 7 8 11 14 14" fill="none" stroke="#a8f1ff" stroke-width="3"/></svg></div>`,
- altar:`<div class="tileIcon"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M15 46h34l6 10H9z" fill="#66594b" stroke="#2b241f" stroke-width="3"/><path d="M20 22h24l4 25H16z" fill="#7c6c58" stroke="#322a22" stroke-width="3"/><circle cx="32" cy="20" r="11" fill="#203846" stroke="#8ee6ff" stroke-width="3"/><path d="M32 11v18M23 20h18" stroke="#e7cc79" stroke-width="3"/><circle cx="32" cy="20" r="4" fill="#fff0a5"/></svg></div>`,
- portal:`<div class="tileIcon"><svg viewBox="0 0 64 64" aria-hidden="true"><defs><radialGradient id="pg"><stop stop-color="#e9fbff"/><stop offset=".28" stop-color="#55d8ff"/><stop offset=".6" stop-color="#4960ff"/><stop offset="1" stop-color="#5c1c9d"/></radialGradient></defs><ellipse cx="32" cy="32" rx="21" ry="27" fill="none" stroke="#6a5cff" stroke-width="6"/><ellipse cx="32" cy="32" rx="15" ry="21" fill="url(#pg)" opacity=".96"/><path d="M22 20c14 3 16 19 3 26M41 17c-12 7-11 24 4 29" fill="none" stroke="#fff" stroke-width="2" opacity=".7"/></svg></div>`,
- stairsDown:`<div class="tileIcon"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M12 18h15v9h10v9h10v9h9v9H12z" fill="#78838c" stroke="#29333a" stroke-width="3"/><path d="M51 11v20M43 24l8 8 8-8" fill="none" stroke="#73d7ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`,
- stairsUp:`<div class="tileIcon"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M12 54h15v-9h10v-9h10v-9h9v-9H12z" fill="#78838c" stroke="#29333a" stroke-width="3"/><path d="M51 31V11M43 18l8-8 8 8" fill="none" stroke="#73d7ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`,
- player:`<div class="tileIcon"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M22 17c0-9 20-9 20 0v8H22z" fill="#aeb8c0" stroke="#343b42" stroke-width="3"/><path d="M18 29l14-8 14 8-4 24H22z" fill="#7e8d99" stroke="#2a333a" stroke-width="3"/><path d="M20 31l-8 15 8 4M44 31l8 15-8 4" fill="none" stroke="#c6d0d7" stroke-width="5" stroke-linecap="round"/><path d="M24 22h16M28 17h8" stroke="#293238" stroke-width="3"/><path d="M22 54l-8 6M42 54l8 6" stroke="#8c9399" stroke-width="5" stroke-linecap="round"/><path d="M18 29l14-8 14 8-4 9H22z" fill="#9d221c" opacity=".85"/></svg></div>`
-};
-function monsterIcon(name){
- const n=name.toLowerCase();
- const wrap=(body)=>`<svg viewBox="0 0 96 96" aria-hidden="true">${body}</svg>`;
- if(n.includes('rat'))return wrap(`<ellipse cx="48" cy="55" rx="29" ry="20" fill="#5d5048" stroke="#211b18" stroke-width="4"/><circle cx="31" cy="38" r="10" fill="#6b5a50"/><circle cx="65" cy="38" r="10" fill="#6b5a50"/><path d="M28 54l-18 8M68 54l18 8M47 57l-8 7h18z" fill="#c69c8e" stroke="#211b18" stroke-width="3"/><circle cx="38" cy="49" r="4" fill="#ff5147"/><circle cx="58" cy="49" r="4" fill="#ff5147"/><path d="M75 65c16 6 15 18 6 21" fill="none" stroke="#8b7264" stroke-width="4"/>`);
- if(n.includes('skeleton'))return wrap(`<circle cx="48" cy="30" r="20" fill="#d9d2bd" stroke="#4b463b" stroke-width="4"/><circle cx="40" cy="27" r="5" fill="#191919"/><circle cx="56" cy="27" r="5" fill="#191919"/><path d="M44 38h8M48 50v31M29 60h38M35 80l-10 11M61 80l10 11" stroke="#d9d2bd" stroke-width="7" stroke-linecap="round"/><path d="M38 47h20" stroke="#4b463b" stroke-width="3"/>`);
- if(n.includes('goblin')||n.includes('orc')||n.includes('ogre'))return wrap(`<path d="M18 28l20 7 10-18 10 18 20-7-9 25c5 21-8 34-21 34S22 74 27 53z" fill="#548f38" stroke="#20321a" stroke-width="4"/><path d="M25 45l-14-10 8 21M71 45l14-10-8 21" fill="#6dac43" stroke="#20321a" stroke-width="4"/><circle cx="37" cy="52" r="5" fill="#ffce4c"/><circle cx="59" cy="52" r="5" fill="#ffce4c"/><path d="M36 70l8-6 4 8 4-8 8 6" fill="none" stroke="#1d271a" stroke-width="4"/>`);
- if(n.includes('wraith')||n.includes('lich')||n.includes('cult'))return wrap(`<path d="M20 83l7-45c3-18 39-18 42 0l7 45-14-8-14 10-14-10z" fill="#293246" stroke="#0b1019" stroke-width="4"/><path d="M31 39c3-23 31-23 34 0l-8 17H39z" fill="#111820"/><circle cx="40" cy="42" r="4" fill="#57f0d0"/><circle cx="56" cy="42" r="4" fill="#57f0d0"/><path d="M48 55v18M39 64h18" stroke="#6cefd6" stroke-width="3"/>`);
- if(n.includes('drake')||n.includes('demon')||n.includes('basilisk')||n.includes('nightmare'))return wrap(`<path d="M48 18L29 9l5 18-18 9 15 11-9 22 22-7 4 24 4-24 22 7-9-22 15-11-18-9 5-18z" fill="#7f2b2d" stroke="#2d1012" stroke-width="4"/><path d="M29 51l19-16 19 16-7 25H36z" fill="#a73c34"/><circle cx="40" cy="53" r="5" fill="#ffd34d"/><circle cx="56" cy="53" r="5" fill="#ffd34d"/><path d="M39 68l9-5 9 5" stroke="#2b0e0f" stroke-width="4" fill="none"/>`);
- if(n.includes('golem'))return wrap(`<path d="M27 24l17-10 18 8 9 22-5 30-20 12-22-10-5-31z" fill="#777d80" stroke="#2b3032" stroke-width="5"/><path d="M33 40l12-6 15 5-4 16-17 1z" fill="#92999c"/><circle cx="38" cy="46" r="4" fill="#70d9ff"/><circle cx="55" cy="46" r="4" fill="#70d9ff"/><path d="M35 66h24" stroke="#303536" stroke-width="4"/>`);
- if(n.includes('mimic'))return wrap(`<path d="M15 39h66v40H15z" fill="#9b5615" stroke="#402208" stroke-width="5"/><path d="M20 39c2-21 54-21 56 0" fill="#b86b1c" stroke="#402208" stroke-width="5"/><path d="M25 54l10 9 10-9 10 9 12-10" fill="none" stroke="#fff0b0" stroke-width="6"/><circle cx="34" cy="39" r="5" fill="#f5d656"/><circle cx="62" cy="39" r="5" fill="#f5d656"/>`);
- return wrap(`<ellipse cx="48" cy="54" rx="30" ry="27" fill="#557d38" stroke="#223118" stroke-width="4"/><circle cx="37" cy="49" r="5" fill="#f5df57"/><circle cx="59" cy="49" r="5" fill="#f5df57"/><path d="M36 68q12 8 24 0" fill="none" stroke="#1e2e16" stroke-width="4"/>`);
-}
-
+(()=>{'use strict';
+const SIZE=21,MAX_FLOOR=20,VIEW=4,$=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];let state=null,selectedClass='Vanguard',autoWalkToken=0;
 const roomNames=['Whispering Gallery','Broken Reliquary','Ashen Hall','Forgotten Barracks','Moonless Chapel','Salt Crypt','Iron Sepulcher','Cistern of Echoes','Hollow Archive','Obsidian Vault'];
-const monsters=[
- ['Giant Rat',8,3,4],['Goblin',12,4,7],['Skeleton',16,5,10],['Orc',22,7,15],['Wraith',28,9,22],
- ['Ogre',38,11,32],['Cult Knight',48,14,45],['Cave Drake',62,17,64],['Demon',78,21,90],['Void Lich',100,25,130],
- ['Mimic',34,10,30],['Basilisk',52,15,55],['Ash Golem',72,18,78],['Nightmare',88,22,110]
-];
-const bosses={
- 5:['The Bone Regent',85,14,120],
- 10:['Maw of the Deep',150,22,250],
- 15:['Arch-Lich Veyr',230,31,420],
- 20:['The Star Warden',340,40,700]
-};
-const artifactPool=[
- {id:'ember',name:'Emberbrand',desc:'+3 weapon damage and stronger Power Strikes.'},
- {id:'aegis',name:'Aegis of Hollow Kings',desc:'+3 armor and improved guarding.'},
- {id:'eye',name:'Seer’s Eye',desc:'Greater critical chance and safer fleeing.'},
- {id:'crown',name:'Crown of Ash',desc:'+8 max mana and stronger spells.'}
-];
-let state=null, selectedClass='Vanguard';
-
-const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
-function rng(seed){let t=seed>>>0;return function(){t+=0x6D2B79F5;let r=Math.imul(t^t>>>15,1|t);r^=r+Math.imul(r^r>>>7,61|r);return((r^r>>>14)>>>0)/4294967296}}
-function seedFor(f){return (state.seed + f*7919)>>>0}
-function key(x,y){return x+','+y}
-function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
-function addLog(msg,cls){const p=document.createElement('p');p.textContent=msg;if(cls)p.className=cls;$('#log').appendChild(p);$('#log').scrollTop=$('#log').scrollHeight}
-function xpNeed(){return state.level*45+35}
-
-function makeFloor(f){
- const r=rng(seedFor(f)), cells={};
- for(let y=0;y<SIZE;y++)for(let x=0;x<SIZE;x++){
-   const edge=x===0||y===0||x===SIZE-1||y===SIZE-1;
-   cells[key(x,y)]={type:edge?'wall':(r()<.13?'wall':'floor'),seen:false,used:false};
- }
- // clear a guaranteed spine and start
- for(let i=1;i<SIZE-1;i++){cells[key(10,i)].type='floor';cells[key(i,10)].type='floor'}
- const spots=[];
- for(let y=1;y<SIZE-1;y++)for(let x=1;x<SIZE-1;x++)if(cells[key(x,y)].type==='floor')spots.push([x,y]);
- function place(type,n){for(let i=0;i<n;i++){for(let tries=0;tries<80;tries++){const p=spots[Math.floor(r()*spots.length)],cell=cells[key(p[0],p[1])];if(cell.type==='floor'&&!(p[0]===10&&(p[1]===10||p[1]===SIZE-3))){cell.type=type;break}}}}
- if(f>1) cells[key(10,10)].type='stairsUp';
- cells[key(10,SIZE-3)].type=f===MAX_FLOOR?'altar':'stairsDown';
- place('chest',6);place('fountain',4);place('altar',3);place('portal',2);
- return cells;
-}
-function ensureFloor(f){if(!state.maps[f])state.maps[f]=makeFloor(f);return state.maps[f]}
-function newState(name,cls,mode){
- const base={Vanguard:{str:15,dex:10,int:8,con:15},Arcanist:{str:8,dex:10,int:16,con:11},Wayfinder:{str:10,dex:16,int:10,con:11}}[cls];
- return {name,cls,mode,seed:Math.floor(Math.random()*1e9),floor:1,x:10,y:10,level:1,xp:0,gold:0,hp:base.con*3,mp:base.int*2,gameOver:false,
- maxHp:base.con*3,maxMp:base.int*2,armor:0,weapon:0,potions:2,stats:base,maps:{},combat:null,kills:0,chests:0,deepest:1,bossesDefeated:{},artifacts:[],townVisits:0,
- checkpoint:null,quests:[{text:'Reach dungeon floor 5',done:false},{text:'Open 10 treasure chests',done:false},{text:'Defeat 25 monsters',done:false},{text:'Recover the Star of Telengard',done:false}],won:false};
-}
-function save(){if(state&&!state.gameOver)localStorage.setItem('telengardReforgedSave',JSON.stringify(state))}
-function migrate(s){if(!s)return s;s.bossesDefeated=s.bossesDefeated||{};s.artifacts=s.artifacts||[];s.townVisits=s.townVisits||0;s.gameOver=!!s.gameOver;return s}
-function load(){try{return migrate(JSON.parse(localStorage.getItem('telengardReforgedSave')))}catch(e){return null}}
-
-function roomText(cell){
- const f=state.floor, r=rng(seedFor(f)+state.x*97+state.y*193);
- $('#roomTitle').textContent=roomNames[Math.floor(r()*roomNames.length)];
- const desc={stairsDown:'A stairway descends into colder darkness.',stairsUp:'Worn stairs climb toward safer ground.',fountain:'A luminous fountain murmurs here.',altar:'An ancient altar waits in silence.',chest:'A locked coffer rests beneath the dust.',portal:'A ring of blue fire bends the air.',floor:'Dust, cracked stone, and old tracks cover the floor.',wall:'Solid stone blocks the way.'};
- $('#roomDesc').textContent=desc[cell.type]||desc.floor;
-}
-function updateUI(){
- if(!state)return;
- $('#heroName').textContent=state.name;$('#heroClass').textContent=state.cls;$('#floor').textContent=state.floor;$('#level').textContent=state.level;$('#gold').textContent=state.gold;$('#armor').textContent=state.armor;
- $('#hpText').textContent=state.hp+' / '+state.maxHp;$('#mpText').textContent=state.mp+' / '+state.maxMp;$('#xpText').textContent=state.xp+' / '+xpNeed();
- $('#hpBar').style.width=(100*state.hp/state.maxHp)+'%';$('#mpBar').style.width=(100*state.mp/state.maxMp)+'%';$('#xpBar').style.width=Math.min(100,100*state.xp/xpNeed())+'%';
- $('#attrs').innerHTML=Object.entries(state.stats).map(([k,v])=>'<div class="stat"><span>'+k.toUpperCase()+'</span><b>'+v+'</b></div>').join('');
- $('#inventory').innerHTML='<div class="item">Weapon +' + state.weapon + '</div><div class="item">Armor +' + state.armor + '</div><div class="item">Healing potions ×' + state.potions + '</div>';
- $('#relics').innerHTML='<div class="item"><span class="badge">Arc Bolt · 5 MP</span><span class="badge">Soul Flare · 9 MP</span></div>'+(state.artifacts.length?state.artifacts.map(a=>'<div class="item artifact">◆ '+a.name+'<div class="muted">'+a.desc+'</div></div>').join(''):'<div class="item muted">No artifacts recovered yet.</div>');
- $('#quests').innerHTML=state.quests.map(q=>'<div class="item '+(q.done?'good':'')+'">'+(q.done?'✓ ':'○ ')+q.text+'</div>').join('');
- $$('.compass button[data-move]').forEach(b=>b.disabled=!!state.combat);
- $('#restBtn').disabled=!!state.combat;
- renderMap();updateCombat();checkQuests();save();
-}
-function renderMap(){
- const cells=ensureFloor(state.floor), map=$('#map');map.innerHTML='';
- map.setAttribute('aria-label','Interactive dungeon map. Tap a visible walkable tile to move there, or use arrow keys or WASD.');
- for(let y=state.y-VIEW;y<=state.y+VIEW;y++)for(let x=state.x-VIEW;x<=state.x+VIEW;x++){
-  const d=document.createElement('div'),cell=cells[key(x,y)];
-  if(!cell){d.className='cell unseen';map.appendChild(d);continue}
-  const dist=Math.abs(x-state.x)+Math.abs(y-state.y);if(dist<=VIEW+1)cell.seen=true;
-  d.className='cell '+(cell.seen?'seen '+cell.type:'unseen');
-  d.dataset.x=x;d.dataset.y=y;
-  if(x===state.x&&y===state.y){d.className='cell seen '+cell.type+' here';d.setAttribute('aria-label','Player position');d.innerHTML=tileIcons.player}
-  else if(cell.seen){d.setAttribute('aria-label',cell.type.replace(/([A-Z])/g,' $1').toLowerCase());if(cell.type!=='wall')d.classList.add('tappable');if(tileIcons[cell.type])d.innerHTML=tileIcons[cell.type]}
-  map.appendChild(d);
- }
- roomText(cells[key(state.x,state.y)]);
-}
-let autoWalkToken=0;
-function cancelAutoWalk(){autoWalkToken++}
-function pathTo(tx,ty){
- if(!state)return null;const cells=ensureFloor(state.floor),start=key(state.x,state.y),goal=key(tx,ty),q=[[state.x,state.y]],prev={[start]:null};
- while(q.length){const [x,y]=q.shift();if(x===tx&&y===ty)break;for(const [dx,dy] of [[0,-1],[1,0],[0,1],[-1,0]]){const nx=x+dx,ny=y+dy,k=key(nx,ny),cell=cells[k];if(!cell||!cell.seen||cell.type==='wall'||Object.prototype.hasOwnProperty.call(prev,k))continue;prev[k]=[x,y];q.push([nx,ny])}}
- if(!Object.prototype.hasOwnProperty.call(prev,goal))return null;const path=[];let cur=[tx,ty];while(key(cur[0],cur[1])!==start){path.push(cur);cur=prev[key(cur[0],cur[1])]}return path.reverse();
-}
-function walkTo(tx,ty){
- if(!state||state.combat)return;const cells=ensureFloor(state.floor),target=cells[key(tx,ty)];if(!target||!target.seen||target.type==='wall')return;
- if(tx===state.x&&ty===state.y)return;const path=pathTo(tx,ty);if(!path||!path.length){addLog('No explored path reaches that tile.','muted');return}
- const token=++autoWalkToken,startFloor=state.floor;
- function step(i){if(token!==autoWalkToken||!state||state.combat||state.floor!==startFloor||i>=path.length)return;const [nx,ny]=path[i],dx=nx-state.x,dy=ny-state.y;if(Math.abs(dx)+Math.abs(dy)!==1)return;move(dx,dy,true);if(token!==autoWalkToken||state.combat||state.floor!==startFloor)return;setTimeout(()=>step(i+1),115)}
- step(0);
-}
-function move(dx,dy,fromAuto){
- if(!fromAuto)cancelAutoWalk();
- if(!state||state.combat)return;
- const cells=ensureFloor(state.floor), nx=state.x+dx,ny=state.y+dy,c=cells[key(nx,ny)];
- if(!c||c.type==='wall'){addLog('Stone blocks your path.','muted');return}
- state.x=nx;state.y=ny;enterCell(c);if(!state.combat&&Math.random()<encounterChance())startEncounter();updateUI();
-}
-function encounterChance(){return .11+state.floor*.006+(state.artifacts.some(a=>a.id==='eye')?-.015:0)}
-function enterCell(c){
- if(c.type==='stairsDown'){if(state.floor===MAX_FLOOR){return}const next=state.floor+1;state.floor=next;state.deepest=Math.max(state.deepest,state.floor);state.x=10;state.y=10;state.checkpoint={floor:state.floor,x:state.x,y:state.y,hp:state.maxHp,mp:state.maxMp};addLog('You descend to floor '+state.floor+'.','gold');if(next%5===0&&!state.bossesDefeated[next]){addLog('A terrible presence seals the floor. Defeat its guardian to descend safely.','boss');setTimeout(()=>startEncounter(true),0)}}
- else if(c.type==='stairsUp'){if(state.floor>1){state.floor--;state.x=10;state.y=SIZE-3;addLog('You climb to floor '+state.floor+'.','muted')}}
- else if(!c.used&&c.type==='chest'){c.used=true;state.chests++;const g=10+Math.floor(Math.random()*20)+state.floor*4;state.gold+=g;addLog('Treasure! You find '+g+' gold.','gold');if(Math.random()<.28){state.weapon++;addLog('You also find a sharper weapon. Weapon +'+state.weapon+'.','good')}if(Math.random()<.18)state.potions++}
- else if(!c.used&&c.type==='fountain'){c.used=true;const roll=Math.random();if(roll<.7){state.hp=Math.min(state.maxHp,state.hp+Math.ceil(state.maxHp*.45));state.mp=Math.min(state.maxMp,state.mp+Math.ceil(state.maxMp*.45));addLog('The fountain restores body and mind.','good')}else{state.hp=Math.max(1,state.hp-5);addLog('The water burns like ice.','bad')}}
- else if(!c.used&&c.type==='altar'){c.used=true;if(state.floor===MAX_FLOOR){if(!state.bossesDefeated[20]){addLog('The Star rejects you while its Warden still lives.','bad');startEncounter(true)}else{state.won=true;state.quests[3].done=true;addLog('You claim the Star of Telengard. The dungeon trembles. You have won!','gold');showResult(true)}}else if(Math.random()<.65){state.stats.con++;state.maxHp+=3;state.hp+=3;addLog('A forgotten power strengthens you.','good')}else{startEncounter(true)}}
- else if(!c.used&&c.type==='portal'){c.used=true;state.x=2+Math.floor(Math.random()*(SIZE-4));state.y=2+Math.floor(Math.random()*(SIZE-4));const target=ensureFloor(state.floor)[key(state.x,state.y)];if(target&&target.type==='wall')target.type='floor';addLog('The portal folds space around you.','gold')}
-}
-function monsterForFloor(boss){
- if(boss&&bosses[state.floor]){const b=bosses[state.floor];return {name:b[0],maxHp:b[1],hp:b[1],atk:b[2],xp:b[3],boss:true,guard:false}}
- const idx=clamp(Math.floor((state.floor-1)/2+Math.random()*4),0,monsters.length-1),m=monsters[idx],scale=1+(state.floor-1)*.085;
- return {name:m[0],maxHp:Math.round(m[1]*scale),hp:Math.round(m[1]*scale),atk:Math.round(m[2]*scale),xp:Math.round(m[3]*scale),boss:false,guard:false};
-}
-function startEncounter(boss){
- state.combat=monsterForFloor(!!boss);addLog('A '+state.combat.name+' attacks!','bad');updateCombat();
-}
-function updateCombat(){
- const box=$('#combat');if(!state||!state.combat){box.classList.add('hidden');return}
- box.classList.remove('hidden');$('#enemyName').className=state.combat.boss?'boss':'';$('#enemyName').textContent=(state.combat.boss?'BOSS · ':'')+state.combat.name+' — '+state.combat.hp+'/'+state.combat.maxHp+' HP';$('#enemyPortrait').className='enemyPortrait'+(state.combat.boss?' boss':'');$('#enemyPortrait').innerHTML=monsterIcon(state.combat.name);$('#enemyBar').style.width=(100*state.combat.hp/state.combat.maxHp)+'%';
- $('#potionBtn').textContent='Potion ('+state.potions+')';$('#potionBtn').disabled=state.potions<=0;
-}
-function heroDamage(power){
- const s=state.stats, base=state.weapon+(state.artifacts.some(a=>a.id==='ember')?3:0)+Math.floor(s.str/3)+Math.floor(Math.random()*6)+1;
- let mult=power?(state.artifacts.some(a=>a.id==='ember')?1.9:1.65):1;if((state.cls==='Wayfinder'&&Math.random()<.18)||(state.artifacts.some(a=>a.id==='eye')&&Math.random()<.12)){mult*=1.8;addLog('Critical strike!','good')}return Math.max(1,Math.round(base*mult));
-}
-function enemyTurn(guarding){
- if(!state.combat)return;
- let dmg=Math.max(1,state.combat.atk+Math.floor(Math.random()*5)-state.armor-(state.artifacts.some(a=>a.id==='aegis')?3:0)-Math.floor(state.stats.dex/6));
- if(guarding)dmg=Math.ceil(dmg*(state.artifacts.some(a=>a.id==='aegis')?.3:.45));state.hp-=dmg;addLog(state.combat.name+' hits you for '+dmg+'.','bad');if(state.hp<=0)die();
-}
-function resolveHit(dmg,label){
- const foe=state.combat;foe.hp-=dmg;addLog(label+' deals '+dmg+' damage.','good');if(foe.hp<=0){
-  const xp=foe.xp,g=(foe.boss?70:3)+Math.floor(Math.random()*(foe.boss?45:8))+state.floor;addLog('You defeat '+foe.name+' and gain '+xp+' XP.','gold');state.xp+=xp;state.gold+=g;state.kills++;
-  if(foe.boss){state.bossesDefeated[state.floor]=true;awardArtifact();addLog('The seal on this floor breaks.','gold')}
-  state.combat=null;levelCheck();return true
- }return false;
-}
-function awardArtifact(){
- const owned=new Set(state.artifacts.map(a=>a.id)),choices=artifactPool.filter(a=>!owned.has(a.id));if(!choices.length)return;
- const a=choices[Math.floor(Math.random()*choices.length)];state.artifacts.push(a);if(a.id==='crown'){state.maxMp+=8;state.mp+=8}addLog('Artifact recovered: '+a.name+' — '+a.desc,'artifact');
-}
-function levelCheck(){while(state.xp>=xpNeed()){state.xp-=xpNeed();state.level++;state.maxHp+=5+Math.floor(state.stats.con/4);state.maxMp+=3+Math.floor(state.stats.int/5);state.hp=state.maxHp;state.mp=state.maxMp;state.stats.str+=state.level%2;state.stats.dex+=state.level%3===0?1:0;state.stats.int+=state.level%2===0?1:0;addLog('LEVEL UP! You are now level '+state.level+'.','gold')}}
-function die(){
- if(state.mode==='classic'){addLog('Your expedition ends in the dark.','bad');state.gameOver=true;localStorage.removeItem('telengardReforgedSave');state.combat=null;$('#continueBtn').classList.add('hidden');showResult(false);return}
- const cp=state.checkpoint||{floor:1,x:10,y:10,hp:state.maxHp,mp:state.maxMp};state.floor=cp.floor;state.x=cp.x;state.y=cp.y;state.hp=Math.max(1,Math.floor(state.maxHp*.65));state.mp=Math.floor(state.maxMp*.65);state.gold=Math.floor(state.gold*.8);state.combat=null;addLog('Defeated, you awaken at your last stair checkpoint. Some gold is gone.','bad');
-}
-function playerAction(kind){
- if(!state.combat)return;
- if(kind==='attack'){if(resolveHit(heroDamage(false),'Your attack')){updateUI();return}enemyTurn(false)}
- if(kind==='power'){let chance=.72+state.stats.str*.01;if(state.cls==='Vanguard')chance+=.12;if(Math.random()<chance){if(resolveHit(heroDamage(true),'Power Strike')){updateUI();return}}else addLog('Your heavy swing misses.','muted');enemyTurn(false)}
- if(kind==='spell'){const useFlare=state.level>=4&&state.mp>=9&&state.combat.hp>state.combat.maxHp*.45,cost=useFlare?9:5;if(state.mp<cost){addLog('Not enough mana.','muted');return}state.mp-=cost;let dmg=(useFlare?9:4)+Math.floor(state.stats.int*(useFlare?1.25:.9))+Math.floor(Math.random()*(useFlare?10:7));if(state.cls==='Arcanist')dmg=Math.round(dmg*1.35);if(state.artifacts.some(a=>a.id==='crown'))dmg=Math.round(dmg*1.18);if(resolveHit(dmg,useFlare?'Soul Flare':'Arc Bolt')){updateUI();return}enemyTurn(false)}
- if(kind==='guard'){addLog('You brace for the attack.','muted');enemyTurn(true)}
- if(kind==='potion'){if(state.potions<1)return;state.potions--;const heal=Math.ceil(state.maxHp*.45);state.hp=Math.min(state.maxHp,state.hp+heal);addLog('You recover '+heal+' HP.','good');enemyTurn(false)}
- if(kind==='flee'){if(state.combat.boss){addLog('There is no escape from a floor guardian.','bad');enemyTurn(false);updateUI();return}let chance=.35+state.stats.dex*.02+(state.cls==='Wayfinder'?.18:0)+(state.artifacts.some(a=>a.id==='eye')?.12:0);if(Math.random()<chance){addLog('You escape the fight.','good');state.combat=null}else{addLog('You fail to escape.','bad');enemyTurn(false)}}
- updateUI();
-}
-function rest(){
- if(state.combat)return;const heal=Math.ceil(state.maxHp*.18),mana=Math.ceil(state.maxMp*.22);state.hp=Math.min(state.maxHp,state.hp+heal);state.mp=Math.min(state.maxMp,state.mp+mana);addLog('You rest briefly and recover.','good');if(Math.random()<.28)startEncounter();updateUI();
-}
-function showTown(){
- if(!state||state.combat)return;state.townVisits++;$('#townOverlay').classList.remove('hidden');renderTown();save()
-}
-function renderTown(){
- $('#townStats').innerHTML='<div class="stat"><span>Gold available</span><b>'+state.gold+'</b></div><div class="stat"><span>Deepest floor</span><b>'+state.deepest+'</b></div><div class="stat"><span>Bosses defeated</span><b>'+Object.keys(state.bossesDefeated).length+' / 4</b></div><div class="subtleline"></div>'
-}
-function buy(kind){
- const costs={potion:25,weapon:90,armor:90,heal:40},cost=costs[kind];if(state.gold<cost){addLog('You do not have enough gold.','bad');return}
- if(kind==='heal'&&state.hp===state.maxHp&&state.mp===state.maxMp){addLog('You are already fully recovered.','muted');return}
- state.gold-=cost;if(kind==='potion')state.potions++;if(kind==='weapon')state.weapon++;if(kind==='armor')state.armor++;if(kind==='heal'){state.hp=state.maxHp;state.mp=state.maxMp}
- addLog('Town purchase complete.','good');renderTown();updateUI()
-}
-function showResult(won){
- $('#resultKicker').textContent=won?'THE STAR IS YOURS':'EXPEDITION ENDED';$('#resultTitle').textContent=won?'VICTORY':'DEFEATED';$('#resultTitle').className='bigresult '+(won?'gold':'bad');
- $('#resultText').textContent=won?'You recovered the Star of Telengard and survived the descent.':'The dungeon claims another adventurer.';
- $('#resultStats').innerHTML='<div class="stat"><span>Level reached</span><b>'+state.level+'</b></div><div class="stat"><span>Deepest floor</span><b>'+state.deepest+'</b></div><div class="stat"><span>Monsters defeated</span><b>'+state.kills+'</b></div><div class="stat"><span>Artifacts</span><b>'+state.artifacts.length+'</b></div>';$('#resultOverlay').classList.remove('hidden')
-}
-function checkQuests(){
- if(!state)return;const q=state.quests;const before=q.map(x=>x.done).join('');
- q[0].done=state.deepest>=5;q[1].done=state.chests>=10;q[2].done=state.kills>=25;q[3].done=state.won;
- const after=q.map(x=>x.done).join('');if(before!==after){addLog('A run goal has been completed.','gold')}
-}
+const monsters=[['Giant Rat',8,3,4],['Goblin',12,4,7],['Skeleton',16,5,10],['Orc',22,7,15],['Wraith',28,9,22],['Ogre',38,11,32],['Cult Knight',48,14,45],['Cave Drake',62,17,64],['Demon',78,21,90],['Void Lich',100,25,130],['Mimic',34,10,30],['Basilisk',52,15,55],['Ash Golem',72,18,78],['Nightmare',88,22,110]];
+const bosses={5:['The Bone Regent',85,14,120],10:['Maw of the Deep',150,22,250],15:['Arch-Lich Veyr',230,31,420],20:['The Star Warden',340,40,700]};
+const artifactPool=[{id:'ember',name:'Emberbrand',desc:'+3 weapon damage and stronger Power Strikes.'},{id:'aegis',name:'Aegis of Hollow Kings',desc:'+3 armor and improved guarding.'},{id:'eye',name:'Seer’s Eye',desc:'Greater critical chance and safer fleeing.'},{id:'crown',name:'Crown of Ash',desc:'+8 max mana and stronger spells.'}];
+const iconWrap=s=>`<div class="tileIcon">${s}</div>`;
+const tileIcons={chest:iconWrap(`<svg viewBox="0 0 64 64"><path d="M9 28h46v25H9z" fill="#9e5b14" stroke="#3a2108" stroke-width="4"/><path d="M12 28c1-13 9-19 20-19s19 6 20 19" fill="#bc741b" stroke="#3a2108" stroke-width="4"/><path d="M29 26h7v28h-7z" fill="#efc85c"/><rect x="27" y="35" width="11" height="10" rx="2" fill="#ffec9b" stroke="#5a3508" stroke-width="2"/></svg>`),fountain:iconWrap(`<svg viewBox="0 0 64 64"><ellipse cx="32" cy="45" rx="20" ry="8" fill="#1589b9" stroke="#8fe9ff" stroke-width="3"/><path d="M32 9c-7 9-10 16-10 22a10 10 0 0 0 20 0c0-6-3-13-10-22z" fill="#6fe7ff" stroke="#e4fdff" stroke-width="2"/><path d="M15 51h34l5 7H10z" fill="#5f6462" stroke="#252927" stroke-width="3"/></svg>`),altar:iconWrap(`<svg viewBox="0 0 64 64"><path d="M15 45h34l6 11H9z" fill="#686057" stroke="#2c2925" stroke-width="3"/><path d="M20 22h24l4 24H16z" fill="#7b7165" stroke="#322e29" stroke-width="3"/><circle cx="32" cy="19" r="11" fill="#1f3c49" stroke="#8beaff" stroke-width="3"/><path d="M32 10v18M23 19h18" stroke="#e9ce77" stroke-width="3"/></svg>`),portal:iconWrap(`<svg viewBox="0 0 64 64"><defs><radialGradient id="p"><stop stop-color="#eefcff"/><stop offset=".3" stop-color="#55d9ff"/><stop offset=".62" stop-color="#4a61ff"/><stop offset="1" stop-color="#6a229e"/></radialGradient></defs><ellipse cx="32" cy="32" rx="21" ry="27" fill="none" stroke="#6b5cff" stroke-width="6"/><ellipse cx="32" cy="32" rx="15" ry="21" fill="url(#p)"/></svg>`),stairsDown:iconWrap(`<svg viewBox="0 0 64 64"><path d="M10 18h16v9h11v9h10v9h9v9H10z" fill="#77716a" stroke="#2e2a26" stroke-width="3"/><path d="M50 10v21M42 23l8 8 8-8" fill="none" stroke="#75d9ff" stroke-width="4"/></svg>`),stairsUp:iconWrap(`<svg viewBox="0 0 64 64"><path d="M10 54h16v-9h11v-9h10v-9h9v-9H10z" fill="#77716a" stroke="#2e2a26" stroke-width="3"/><path d="M50 32V11M42 19l8-8 8 8" fill="none" stroke="#75d9ff" stroke-width="4"/></svg>`),player:iconWrap(`<svg viewBox="0 0 64 64"><ellipse cx="32" cy="52" rx="18" ry="7" fill="#000" opacity=".45"/><path d="M22 17c0-9 20-9 20 0v8H22z" fill="#b8c0c5" stroke="#32383d" stroke-width="3"/><path d="M18 29l14-8 14 8-4 24H22z" fill="#7b858a" stroke="#272e32" stroke-width="3"/><path d="M18 29l14-8 14 8-5 10H23z" fill="#a22921"/><path d="M20 32l-8 15 8 4M44 32l8 15-8 4" fill="none" stroke="#ccd2d4" stroke-width="5"/><path d="M24 22h16" stroke="#24292d" stroke-width="3"/></svg>`)};
+function monsterIcon(name){const n=name.toLowerCase(),w=b=>`<svg viewBox="0 0 96 96">${b}</svg>`;if(n.includes('rat'))return w(`<ellipse cx="48" cy="56" rx="30" ry="20" fill="#5f5148" stroke="#201b18" stroke-width="4"/><circle cx="31" cy="39" r="10" fill="#6d5b50"/><circle cx="65" cy="39" r="10" fill="#6d5b50"/><circle cx="38" cy="50" r="4" fill="#ff594a"/><circle cx="58" cy="50" r="4" fill="#ff594a"/><path d="M47 58l-8 7h18z" fill="#c79b8b"/>`);if(n.includes('skeleton')||n.includes('bone'))return w(`<circle cx="48" cy="30" r="20" fill="#d7d0ba" stroke="#49443a" stroke-width="4"/><circle cx="40" cy="27" r="5"/><circle cx="56" cy="27" r="5"/><path d="M48 50v31M29 60h38M35 80l-10 11M61 80l10 11" stroke="#d7d0ba" stroke-width="7" stroke-linecap="round"/>`);if(n.includes('goblin')||n.includes('orc')||n.includes('ogre'))return w(`<path d="M18 28l20 7 10-18 10 18 20-7-9 25c5 21-8 34-21 34S22 74 27 53z" fill="#5e943d" stroke="#20321a" stroke-width="4"/><path d="M25 45l-14-10 8 21M71 45l14-10-8 21" fill="#78ae4b" stroke="#20321a" stroke-width="4"/><circle cx="37" cy="52" r="5" fill="#ffd455"/><circle cx="59" cy="52" r="5" fill="#ffd455"/>`);if(n.includes('wraith')||n.includes('lich')||n.includes('cult'))return w(`<path d="M20 83l7-45c3-18 39-18 42 0l7 45-14-8-14 10-14-10z" fill="#293446" stroke="#0b1019" stroke-width="4"/><path d="M31 39c3-23 31-23 34 0l-8 17H39z" fill="#10171e"/><circle cx="40" cy="42" r="4" fill="#62f0d3"/><circle cx="56" cy="42" r="4" fill="#62f0d3"/>`);if(n.includes('golem'))return w(`<path d="M27 24l17-10 18 8 9 22-5 30-20 12-22-10-5-31z" fill="#7e8383" stroke="#2c3031" stroke-width="5"/><circle cx="38" cy="46" r="4" fill="#74dcff"/><circle cx="55" cy="46" r="4" fill="#74dcff"/>`);if(n.includes('mimic'))return w(`<path d="M15 39h66v40H15z" fill="#995715" stroke="#402208" stroke-width="5"/><path d="M20 39c2-21 54-21 56 0" fill="#b86d1d" stroke="#402208" stroke-width="5"/><path d="M25 55l10 9 10-9 10 9 12-10" fill="none" stroke="#fff0b0" stroke-width="6"/>`);return w(`<path d="M48 18L29 9l5 18-18 9 15 11-9 22 22-7 4 24 4-24 22 7-9-22 15-11-18-9 5-18z" fill="#8a3030" stroke="#2b1011" stroke-width="4"/><circle cx="40" cy="53" r="5" fill="#ffd24c"/><circle cx="56" cy="53" r="5" fill="#ffd24c"/>`)}
+function rng(seed){let t=seed>>>0;return()=>{t+=0x6D2B79F5;let r=Math.imul(t^t>>>15,1|t);r^=r+Math.imul(r^r>>>7,61|r);return((r^r>>>14)>>>0)/4294967296}}function key(x,y){return x+','+y}function clamp(v,a,b){return Math.max(a,Math.min(b,v))}function seedFor(f){return(state.seed+f*7919)>>>0}function xpNeed(){return state.level*45+35}function addLog(m,c){const p=document.createElement('p');p.textContent=m;if(c)p.className=c;$('#log').appendChild(p);$('#log').scrollTop=$('#log').scrollHeight}
+function makeFloor(f){const r=rng(seedFor(f)),cells={};for(let y=0;y<SIZE;y++)for(let x=0;x<SIZE;x++){const edge=x===0||y===0||x===SIZE-1||y===SIZE-1;cells[key(x,y)]={type:edge?'wall':(r()<.13?'wall':'floor'),seen:false,used:false}}for(let i=1;i<SIZE-1;i++){cells[key(10,i)].type='floor';cells[key(i,10)].type='floor'}const spots=[];for(let y=1;y<SIZE-1;y++)for(let x=1;x<SIZE-1;x++)if(cells[key(x,y)].type==='floor')spots.push([x,y]);const place=(type,n)=>{for(let i=0;i<n;i++)for(let t=0;t<80;t++){const p=spots[Math.floor(r()*spots.length)],c=cells[key(p[0],p[1])];if(c.type==='floor'&&!(p[0]===10&&(p[1]===10||p[1]===SIZE-3))){c.type=type;break}}};if(f>1)cells[key(10,10)].type='stairsUp';cells[key(10,SIZE-3)].type=f===MAX_FLOOR?'altar':'stairsDown';place('chest',6);place('fountain',4);place('altar',3);place('portal',2);return cells}function ensureFloor(f){if(!state.maps[f])state.maps[f]=makeFloor(f);return state.maps[f]}
+function newState(name,cls,mode){const base={Vanguard:{str:15,dex:10,int:8,con:15},Arcanist:{str:8,dex:10,int:16,con:11},Wayfinder:{str:10,dex:16,int:10,con:11}}[cls];return{name,cls,mode,seed:Math.floor(Math.random()*1e9),floor:1,x:10,y:10,level:1,xp:0,gold:0,hp:base.con*3,mp:base.int*2,maxHp:base.con*3,maxMp:base.int*2,armor:0,weapon:0,potions:2,stats:base,maps:{},combat:null,kills:0,chests:0,deepest:1,bossesDefeated:{},artifacts:[],townVisits:0,checkpoint:null,quests:[{text:'Reach dungeon floor 5',done:false},{text:'Open 10 treasure chests',done:false},{text:'Defeat 25 monsters',done:false},{text:'Recover the Star of Telengard',done:false}],won:false,gameOver:false}}function migrate(s){if(!s)return s;s.bossesDefeated=s.bossesDefeated||{};s.artifacts=s.artifacts||[];s.townVisits=s.townVisits||0;s.gameOver=!!s.gameOver;return s}function save(){if(state&&!state.gameOver)localStorage.setItem('telengardReforgedSave',JSON.stringify(state))}function load(){try{return migrate(JSON.parse(localStorage.getItem('telengardReforgedSave')))}catch{return null}}
+function roomText(c){const r=rng(seedFor(state.floor)+state.x*97+state.y*193);$('#roomTitle').textContent=roomNames[Math.floor(r()*roomNames.length)];const d={stairsDown:'A worn stair plunges deeper into the crypt.',stairsUp:'Ancient steps climb toward safer ground.',fountain:'Cold blue water spills from a carved stone basin.',altar:'A candle-blackened altar hums with old power.',chest:'A heavy iron-banded coffer waits in a shallow alcove.',portal:'Violet light churns inside a rune-cut arch.',floor:'Cracked flagstones disappear into torchlit darkness.',wall:'A collapsed shaft blocks the passage.'};$('#roomDesc').textContent=d[c.type]||d.floor}
+function renderMap(){const cells=ensureFloor(state.floor),map=$('#map');map.innerHTML='';for(let y=state.y-VIEW;y<=state.y+VIEW;y++)for(let x=state.x-VIEW;x<=state.x+VIEW;x++){const d=document.createElement('div'),c=cells[key(x,y)];if(!c){d.className='cell unseen';map.appendChild(d);continue}if(Math.abs(x-state.x)+Math.abs(y-state.y)<=VIEW+1)c.seen=true;d.className='cell '+(c.seen?'seen '+c.type:'unseen');d.dataset.x=x;d.dataset.y=y;if(x===state.x&&y===state.y){d.className='cell seen '+c.type+' here';d.innerHTML=tileIcons.player}else if(c.seen){if(c.type!=='wall')d.classList.add('tappable');if(tileIcons[c.type])d.innerHTML=tileIcons[c.type]}map.appendChild(d)}roomText(cells[key(state.x,state.y)])}
+function updateUI(){if(!state)return;$('#heroName').textContent=state.name;$('#heroClass').textContent=state.cls;$('#floor').textContent=state.floor;$('#level').textContent=state.level;$('#gold').textContent=state.gold;$('#armor').textContent=state.armor;$('#hpText').textContent=`${state.hp} / ${state.maxHp}`;$('#mpText').textContent=`${state.mp} / ${state.maxMp}`;$('#xpText').textContent=`${state.xp} / ${xpNeed()}`;$('#hpBar').style.width=100*state.hp/state.maxHp+'%';$('#mpBar').style.width=100*state.mp/state.maxMp+'%';$('#xpBar').style.width=Math.min(100,100*state.xp/xpNeed())+'%';$('#attrs').innerHTML=Object.entries(state.stats).map(([k,v])=>`<div class="stat"><span>${k.toUpperCase()}</span><b>${v}</b></div>`).join('');$('#inventory').innerHTML=`<div class="item">Weapon +${state.weapon}</div><div class="item">Armor +${state.armor}</div><div class="item">Healing potions ×${state.potions}</div>`;$('#relics').innerHTML=`<div class="item"><span class="badge">Arc Bolt · 5 MP</span><span class="badge">Soul Flare · 9 MP</span></div>`+(state.artifacts.length?state.artifacts.map(a=>`<div class="item artifact">◆ ${a.name}<div class="muted">${a.desc}</div></div>`).join(''):'<div class="item muted">No artifacts recovered yet.</div>');$('#quests').innerHTML=state.quests.map(q=>`<div class="item ${q.done?'good':''}">${q.done?'✓':'○'} ${q.text}</div>`).join('');renderMap();updateCombat();checkQuests();save()}
+function cancelAutoWalk(){autoWalkToken++}function pathTo(tx,ty){const cells=ensureFloor(state.floor),start=key(state.x,state.y),goal=key(tx,ty),q=[[state.x,state.y]],prev={[start]:null};while(q.length){const [x,y]=q.shift();if(x===tx&&y===ty)break;for(const[dx,dy]of[[0,-1],[1,0],[0,1],[-1,0]]){const nx=x+dx,ny=y+dy,k=key(nx,ny),c=cells[k];if(!c||!c.seen||c.type==='wall'||Object.hasOwn(prev,k))continue;prev[k]=[x,y];q.push([nx,ny])}}if(!Object.hasOwn(prev,goal))return null;const p=[];let cur=[tx,ty];while(key(...cur)!==start){p.push(cur);cur=prev[key(...cur)]}return p.reverse()}function walkTo(tx,ty){if(!state||state.combat)return;const t=ensureFloor(state.floor)[key(tx,ty)];if(!t||!t.seen||t.type==='wall'||(tx===state.x&&ty===state.y))return;const p=pathTo(tx,ty);if(!p){addLog('No explored path reaches that tile.','muted');return}const token=++autoWalkToken,startFloor=state.floor;const step=i=>{if(token!==autoWalkToken||!state||state.combat||state.floor!==startFloor||i>=p.length)return;const[nx,ny]=p[i];move(nx-state.x,ny-state.y,true);if(token===autoWalkToken&&!state.combat&&state.floor===startFloor)setTimeout(()=>step(i+1),110)};step(0)}
+function move(dx,dy,auto){if(!auto)cancelAutoWalk();if(!state||state.combat)return;const cells=ensureFloor(state.floor),c=cells[key(state.x+dx,state.y+dy)];if(!c||c.type==='wall'){addLog('Stone blocks your path.','muted');return}state.x+=dx;state.y+=dy;enterCell(c);if(!state.combat&&Math.random()<.11+state.floor*.006-(state.artifacts.some(a=>a.id==='eye')?.015:0))startEncounter();updateUI()}
+function enterCell(c){if(c.type==='stairsDown'){if(state.floor===MAX_FLOOR)return;state.floor++;state.deepest=Math.max(state.deepest,state.floor);state.x=10;state.y=10;state.checkpoint={floor:state.floor,x:10,y:10};addLog('You descend to floor '+state.floor+'.','gold');if(state.floor%5===0&&!state.bossesDefeated[state.floor])setTimeout(()=>startEncounter(true),0)}else if(c.type==='stairsUp'&&state.floor>1){state.floor--;state.x=10;state.y=SIZE-3;addLog('You climb to floor '+state.floor+'.')}else if(!c.used&&c.type==='chest'){c.used=true;state.chests++;const g=10+Math.floor(Math.random()*20)+state.floor*4;state.gold+=g;addLog('Treasure! You find '+g+' gold.','gold');if(Math.random()<.28){state.weapon++;addLog('A sharper weapon lies inside.','good')}if(Math.random()<.18)state.potions++}else if(!c.used&&c.type==='fountain'){c.used=true;if(Math.random()<.7){state.hp=Math.min(state.maxHp,state.hp+Math.ceil(state.maxHp*.45));state.mp=Math.min(state.maxMp,state.mp+Math.ceil(state.maxMp*.45));addLog('The fountain restores you.','good')}else{state.hp=Math.max(1,state.hp-5);addLog('The water burns like ice.','bad')}}else if(!c.used&&c.type==='altar'){c.used=true;if(state.floor===MAX_FLOOR){if(!state.bossesDefeated[20])startEncounter(true);else{state.won=true;state.quests[3].done=true;showResult(true)}}else if(Math.random()<.65){state.stats.con++;state.maxHp+=3;state.hp+=3;addLog('The altar strengthens you.','good')}else startEncounter(true)}else if(!c.used&&c.type==='portal'){c.used=true;state.x=2+Math.floor(Math.random()*(SIZE-4));state.y=2+Math.floor(Math.random()*(SIZE-4));const t=ensureFloor(state.floor)[key(state.x,state.y)];if(t&&t.type==='wall')t.type='floor';addLog('The portal folds space around you.','gold')}}
+function monsterForFloor(boss){if(boss&&bosses[state.floor]){const b=bosses[state.floor];return{name:b[0],maxHp:b[1],hp:b[1],atk:b[2],xp:b[3],boss:true}}const m=monsters[clamp(Math.floor((state.floor-1)/2+Math.random()*4),0,monsters.length-1)],s=1+(state.floor-1)*.085;return{name:m[0],maxHp:Math.round(m[1]*s),hp:Math.round(m[1]*s),atk:Math.round(m[2]*s),xp:Math.round(m[3]*s),boss:false}}function startEncounter(boss){state.combat=monsterForFloor(!!boss);addLog('A '+state.combat.name+' attacks!','bad');updateCombat()}function updateCombat(){const b=$('#combat');if(!state||!state.combat){b.classList.add('hidden');return}b.classList.remove('hidden');$('#enemyName').textContent=(state.combat.boss?'BOSS · ':'')+state.combat.name+' — '+state.combat.hp+'/'+state.combat.maxHp+' HP';$('#enemyPortrait').className='enemyPortrait'+(state.combat.boss?' boss':'');$('#enemyPortrait').innerHTML=monsterIcon(state.combat.name);$('#enemyBar').style.width=100*state.combat.hp/state.combat.maxHp+'%';$('#potionBtn').textContent='Potion ('+state.potions+')';$('#potionBtn').disabled=!state.potions}
+function resolveHit(d,label){const foe=state.combat;foe.hp-=d;addLog(label+' deals '+d+' damage.','good');if(foe.hp<=0){state.xp+=foe.xp;state.gold+=(foe.boss?70:3)+Math.floor(Math.random()*(foe.boss?45:8))+state.floor;state.kills++;addLog('You defeat '+foe.name+'.','gold');if(foe.boss){state.bossesDefeated[state.floor]=true;awardArtifact()}state.combat=null;levelCheck();return true}return false}function heroDamage(power){let b=state.weapon+(state.artifacts.some(a=>a.id==='ember')?3:0)+Math.floor(state.stats.str/3)+Math.floor(Math.random()*6)+1,m=power?(state.artifacts.some(a=>a.id==='ember')?1.9:1.65):1;if((state.cls==='Wayfinder'&&Math.random()<.18)||(state.artifacts.some(a=>a.id==='eye')&&Math.random()<.12))m*=1.8;return Math.max(1,Math.round(b*m))}function enemyTurn(guard){if(!state.combat)return;let d=Math.max(1,state.combat.atk+Math.floor(Math.random()*5)-state.armor-(state.artifacts.some(a=>a.id==='aegis')?3:0)-Math.floor(state.stats.dex/6));if(guard)d=Math.ceil(d*(state.artifacts.some(a=>a.id==='aegis')?.3:.45));state.hp-=d;addLog(state.combat.name+' hits you for '+d+'.','bad');if(state.hp<=0)die()}
+function playerAction(k){if(!state.combat)return;if(k==='attack'){if(resolveHit(heroDamage(false),'Your attack'))return updateUI();enemyTurn(false)}if(k==='power'){if(Math.random()<.72+state.stats.str*.01+(state.cls==='Vanguard'?.12:0)){if(resolveHit(heroDamage(true),'Power Strike'))return updateUI()}else addLog('Your heavy swing misses.','muted');enemyTurn(false)}if(k==='spell'){const flare=state.level>=4&&state.mp>=9&&state.combat.hp>state.combat.maxHp*.45,cost=flare?9:5;if(state.mp<cost)return addLog('Not enough mana.','muted');state.mp-=cost;let d=(flare?9:4)+Math.floor(state.stats.int*(flare?1.25:.9))+Math.floor(Math.random()*(flare?10:7));if(state.cls==='Arcanist')d=Math.round(d*1.35);if(state.artifacts.some(a=>a.id==='crown'))d=Math.round(d*1.18);if(resolveHit(d,flare?'Soul Flare':'Arc Bolt'))return updateUI();enemyTurn(false)}if(k==='guard')enemyTurn(true);if(k==='potion'&&state.potions){state.potions--;state.hp=Math.min(state.maxHp,state.hp+Math.ceil(state.maxHp*.45));enemyTurn(false)}if(k==='flee'){if(state.combat.boss){addLog('There is no escape.','bad');enemyTurn(false)}else if(Math.random()<.35+state.stats.dex*.02+(state.cls==='Wayfinder'?.18:0)){state.combat=null;addLog('You escape.','good')}else enemyTurn(false)}updateUI()}
+function awardArtifact(){const owned=new Set(state.artifacts.map(a=>a.id)),c=artifactPool.filter(a=>!owned.has(a.id));if(!c.length)return;const a=c[Math.floor(Math.random()*c.length)];state.artifacts.push(a);if(a.id==='crown'){state.maxMp+=8;state.mp+=8}addLog('Artifact recovered: '+a.name,'artifact')}function levelCheck(){while(state.xp>=xpNeed()){state.xp-=xpNeed();state.level++;state.maxHp+=5+Math.floor(state.stats.con/4);state.maxMp+=3+Math.floor(state.stats.int/5);state.hp=state.maxHp;state.mp=state.maxMp;addLog('LEVEL UP! '+state.level,'gold')}}function die(){if(state.mode==='classic'){state.gameOver=true;localStorage.removeItem('telengardReforgedSave');state.combat=null;showResult(false)}else{const cp=state.checkpoint||{floor:1,x:10,y:10};state.floor=cp.floor;state.x=cp.x;state.y=cp.y;state.hp=Math.max(1,Math.floor(state.maxHp*.65));state.mp=Math.floor(state.maxMp*.65);state.gold=Math.floor(state.gold*.8);state.combat=null;addLog('You awaken at your last checkpoint.','bad')}}function rest(){if(state.combat)return;state.hp=Math.min(state.maxHp,state.hp+Math.ceil(state.maxHp*.18));state.mp=Math.min(state.maxMp,state.mp+Math.ceil(state.maxMp*.22));if(Math.random()<.28)startEncounter();updateUI()}
+function checkQuests(){if(!state)return;state.quests[0].done=state.deepest>=5;state.quests[1].done=state.chests>=10;state.quests[2].done=state.kills>=25;state.quests[3].done=state.won}function showTown(){if(!state||state.combat)return;$('#townOverlay').classList.remove('hidden');renderTown()}function renderTown(){$('#townStats').innerHTML=`<div class="stat"><span>Gold available</span><b>${state.gold}</b></div><div class="stat"><span>Deepest floor</span><b>${state.deepest}</b></div><div class="stat"><span>Bosses defeated</span><b>${Object.keys(state.bossesDefeated).length} / 4</b></div>`}function buy(k){const costs={potion:25,weapon:90,armor:90,heal:40},cost=costs[k];if(state.gold<cost)return;state.gold-=cost;if(k==='potion')state.potions++;if(k==='weapon')state.weapon++;if(k==='armor')state.armor++;if(k==='heal'){state.hp=state.maxHp;state.mp=state.maxMp}renderTown();updateUI()}function showResult(won){$('#resultKicker').textContent=won?'THE STAR IS YOURS':'EXPEDITION ENDED';$('#resultTitle').textContent=won?'VICTORY':'DEFEATED';$('#resultText').textContent=won?'You recovered the Star of Telengard.':'The dungeon claims another adventurer.';$('#resultStats').innerHTML=`<div class="stat"><span>Level reached</span><b>${state.level}</b></div><div class="stat"><span>Deepest floor</span><b>${state.deepest}</b></div><div class="stat"><span>Monsters defeated</span><b>${state.kills}</b></div>`;$('#resultOverlay').classList.remove('hidden')}
 function bootGame(s){state=migrate(s);ensureFloor(state.floor);$('#startOverlay').classList.add('hidden');$('#log').innerHTML='';addLog('You enter Telengard. Find the stairs. Trust nothing.','gold');updateUI()}
-$$('.classpick').forEach(el=>el.onclick=()=>{$$('.classpick').forEach(x=>x.classList.remove('active'));el.classList.add('active');selectedClass=el.dataset.class});
-$('#startBtn').onclick=()=>bootGame(newState($('#nameInput').value.trim()||'Adventurer',selectedClass,$('#modeInput').value));
-$('#continueBtn').onclick=()=>{const s=load();if(s)bootGame(s)};
-$('#newBtn').onclick=()=>{if(confirm('Abandon the current expedition and start a new one?')){$('#startOverlay').classList.remove('hidden');const s=load();$('#continueBtn').classList.toggle('hidden',!s)}};
-$$('[data-move]').forEach(b=>b.onclick=()=>{const [x,y]=b.dataset.move.split(',').map(Number);move(x,y)});
-$$('[data-rest]').forEach(b=>b.onclick=rest);
-$('#map').addEventListener('click',e=>{const tile=e.target.closest('.cell.tappable');if(!tile||!state||state.combat)return;walkTo(Number(tile.dataset.x),Number(tile.dataset.y))});
-$('#restBtn').onclick=rest;$('#townBtn').onclick=showTown;$('#leaveTownBtn').onclick=()=>$('#townOverlay').classList.add('hidden');$$('[data-buy]').forEach(b=>b.onclick=()=>buy(b.dataset.buy));$('#resultNewBtn').onclick=()=>{$('#resultOverlay').classList.add('hidden');$('#startOverlay').classList.remove('hidden')};$('#attackBtn').onclick=()=>playerAction('attack');$('#powerBtn').onclick=()=>playerAction('power');$('#spellBtn').onclick=()=>playerAction('spell');$('#guardBtn').onclick=()=>playerAction('guard');$('#potionBtn').onclick=()=>playerAction('potion');$('#fleeBtn').onclick=()=>playerAction('flee');
-let touchStartX=0,touchStartY=0,touchStarted=false;
-const mapTouch=$('.mapwrap');
-mapTouch.addEventListener('touchstart',e=>{
- if(e.touches.length!==1)return;
- touchStartX=e.touches[0].clientX;touchStartY=e.touches[0].clientY;touchStarted=true;
-},{passive:true});
-mapTouch.addEventListener('touchend',e=>{
- if(!touchStarted||!state||state.combat||!$('#startOverlay').classList.contains('hidden')||!$('#townOverlay').classList.contains('hidden')||!$('#resultOverlay').classList.contains('hidden')){touchStarted=false;return}
- const t=e.changedTouches[0],dx=t.clientX-touchStartX,dy=t.clientY-touchStartY;touchStarted=false;
- if(Math.max(Math.abs(dx),Math.abs(dy))<34)return;
- cancelAutoWalk();if(Math.abs(dx)>Math.abs(dy))move(dx>0?1:-1,0);else move(0,dy>0?1:-1);
-},{passive:true});
-window.addEventListener('keydown',e=>{
- const tag=(e.target&&e.target.tagName||'').toLowerCase();if(tag==='input'||tag==='select'||tag==='textarea')return;
- if(!$('#startOverlay').classList.contains('hidden')||!$('#townOverlay').classList.contains('hidden')||!$('#resultOverlay').classList.contains('hidden')||!state||state.combat)return;
- const k=e.key.toLowerCase(),m={w:[0,-1],arrowup:[0,-1],s:[0,1],arrowdown:[0,1],a:[-1,0],arrowleft:[-1,0],d:[1,0],arrowright:[1,0]};
- if(m[k]){e.preventDefault();move(m[k][0],m[k][1])}else if(k==='r'){e.preventDefault();rest()}
-},{passive:false});
-$('#continueBtn').classList.toggle('hidden',!load());
+$$('.classpick').forEach(e=>e.onclick=()=>{$$('.classpick').forEach(x=>x.classList.remove('active'));e.classList.add('active');selectedClass=e.dataset.class});$('#startBtn').onclick=()=>bootGame(newState($('#nameInput').value.trim()||'Adventurer',selectedClass,$('#modeInput').value));$('#continueBtn').onclick=()=>{const s=load();if(s)bootGame(s)};$('#newBtn').onclick=()=>{if(confirm('Abandon this expedition?'))$('#startOverlay').classList.remove('hidden')};$$('[data-move]').forEach(b=>b.onclick=()=>{const[x,y]=b.dataset.move.split(',').map(Number);move(x,y)});$('#restBtn').onclick=rest;$('#townBtn').onclick=showTown;$('#leaveTownBtn').onclick=()=>$('#townOverlay').classList.add('hidden');$$('[data-buy]').forEach(b=>b.onclick=()=>buy(b.dataset.buy));$('#resultNewBtn').onclick=()=>{$('#resultOverlay').classList.add('hidden');$('#startOverlay').classList.remove('hidden')};$('#attackBtn').onclick=()=>playerAction('attack');$('#powerBtn').onclick=()=>playerAction('power');$('#spellBtn').onclick=()=>playerAction('spell');$('#guardBtn').onclick=()=>playerAction('guard');$('#potionBtn').onclick=()=>playerAction('potion');$('#fleeBtn').onclick=()=>playerAction('flee');$('#map').onclick=e=>{const t=e.target.closest('.cell.tappable');if(t&&!state.combat)walkTo(+t.dataset.x,+t.dataset.y)};
+let sx=0,sy=0,sw=false;$('.mapwrap').addEventListener('touchstart',e=>{if(e.touches.length===1){sx=e.touches[0].clientX;sy=e.touches[0].clientY;sw=true}},{passive:true});$('.mapwrap').addEventListener('touchend',e=>{if(!sw||!state||state.combat)return;sw=false;const t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy;if(Math.max(Math.abs(dx),Math.abs(dy))<34)return;move(Math.abs(dx)>Math.abs(dy)?(dx>0?1:-1):0,Math.abs(dy)>=Math.abs(dx)?(dy>0?1:-1):0)},{passive:true});window.addEventListener('keydown',e=>{if(!state||state.combat||!$('#startOverlay').classList.contains('hidden'))return;const m={arrowup:[0,-1],w:[0,-1],arrowdown:[0,1],s:[0,1],arrowleft:[-1,0],a:[-1,0],arrowright:[1,0],d:[1,0]},k=e.key.toLowerCase();if(m[k]){e.preventDefault();move(...m[k])}else if(k==='r')rest()});$('#continueBtn').classList.toggle('hidden',!load());
 })();
 </script>
-</body>
-</html>
+</body></html>
