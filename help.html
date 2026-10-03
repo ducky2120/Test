@@ -6,7 +6,7 @@
 <title>Telengard: Reforged — Help</title>
 <style>
 :root{--ink:#f4ead5;--muted:#aab3bc;--gold:#e2b65d;--blue:#53caff;--green:#83d3a6;--red:#e45448}
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#05080b;color:var(--ink);font:16px/1.5 Georgia,'Times New Roman',serif}body{background:radial-gradient(circle at 50% -20%,#173144 0,#0a141d 36%,#030506 82%);background-attachment:fixed}.shell{max-width:880px;margin:auto;padding:14px 14px calc(30px + env(safe-area-inset-bottom))}.hero,.card{border:1px solid #7c5724;border-radius:14px;background:linear-gradient(180deg,#131b23,#070b0f);box-shadow:inset 0 0 0 2px #24180b,inset 0 0 28px #000b,0 14px 36px #0008}.hero{padding:18px;margin-bottom:12px}.hero small{color:#83d9ff;text-transform:uppercase;letter-spacing:.13em}.hero h1{margin:4px 0 6px;color:#efc871;font-size:clamp(28px,8vw,46px);font-variant:small-caps;letter-spacing:.06em}.hero p{margin:0;color:var(--muted)}.goal{margin-top:14px;padding:14px;border:1px solid #9b7131;border-radius:12px;background:radial-gradient(circle at 50% 0,#2d2417,#101419 70%)}.goal strong{display:block;color:#f3cc72;font-size:20px;margin-bottom:6px}.card{padding:16px;margin:12px 0}h2{margin:0 0 10px;color:#ebc46e;text-transform:uppercase;letter-spacing:.06em;font-size:19px}h3{color:#d9c185;margin:16px 0 5px;font-size:16px}.steps{display:grid;gap:9px}.step,.legend{padding:11px;border:1px solid #39454f;border-radius:10px;background:linear-gradient(180deg,#111a22,#090e12)}.step b,.legend b{color:#f1c96f}.muted{color:var(--muted)}.good{color:var(--green)}.bad{color:var(--red)}.legendGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.symbol{font-size:23px;display:inline-block;min-width:34px;text-align:center;color:#dce8ee}.tip{border-left:3px solid #53caff;padding-left:12px;color:#c7d7df}.back{display:block;text-align:center;text-decoration:none;color:#fff0cf;border:1px solid #9b7131;background:linear-gradient(180deg,#283746,#0d151c);border-radius:10px;padding:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-top:14px}@media(max-width:600px){.legendGrid{grid-template-columns:1fr}.shell{padding-left:8px;padding-right:8px}.hero,.card{border-radius:12px}.hero{padding:15px}.card{padding:14px}}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#05080b;color:var(--ink);font:16px/1.5 Georgia,'Times New Roman',serif}body{background:radial-gradient(circle at 50% -20%,#173144 0,#0a141d 36%,#030506 82%);background-attachment:fixed}.shell{max-width:880px;margin:auto;padding:14px 14px calc(92px + env(safe-area-inset-bottom))}.hero,.card{border:1px solid #7c5724;border-radius:14px;background:linear-gradient(180deg,#131b23,#070b0f);box-shadow:inset 0 0 0 2px #24180b,inset 0 0 28px #000b,0 14px 36px #0008}.hero{padding:18px;margin-bottom:12px}.hero small{color:#83d9ff;text-transform:uppercase;letter-spacing:.13em}.hero h1{margin:4px 0 6px;color:#efc871;font-size:clamp(28px,8vw,46px);font-variant:small-caps;letter-spacing:.06em}.hero p{margin:0;color:var(--muted)}.goal{margin-top:14px;padding:14px;border:1px solid #9b7131;border-radius:12px;background:radial-gradient(circle at 50% 0,#2d2417,#101419 70%)}.goal strong{display:block;color:#f3cc72;font-size:20px;margin-bottom:6px}.winpath{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}.winpath div{padding:10px 8px;border-radius:9px;border:1px solid #4a3a22;background:#0b1116;text-align:center;font-size:13px}.winpath b{display:block;color:#f1c96f;font-size:18px}.card{padding:16px;margin:12px 0}h2{margin:0 0 10px;color:#ebc46e;text-transform:uppercase;letter-spacing:.06em;font-size:19px}h3{color:#d9c185;margin:16px 0 5px;font-size:16px}.steps{display:grid;gap:9px}.step,.legend{padding:11px;border:1px solid #39454f;border-radius:10px;background:linear-gradient(180deg,#111a22,#090e12)}.step b,.legend b{color:#f1c96f}.muted{color:var(--muted)}.good{color:var(--green)}.bad{color:var(--red)}.legendGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.symbol{font-size:23px;display:inline-block;min-width:34px;text-align:center;color:#dce8ee}.tip{border-left:3px solid #53caff;padding-left:12px;color:#c7d7df}.quick{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.quick .step{min-height:86px}.stickyBack{position:fixed;left:max(10px,env(safe-area-inset-left));right:max(10px,env(safe-area-inset-right));bottom:calc(10px + env(safe-area-inset-bottom));z-index:30;display:flex;gap:8px}.back{flex:1;text-align:center;text-decoration:none;color:#fff0cf;border:1px solid #9b7131;background:linear-gradient(180deg,#283746,#0d151c);border-radius:10px;padding:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;box-shadow:0 8px 24px #000b}.back.secondary{flex:0 0 auto;min-width:112px;color:#bfe8ff;border-color:#416274}.toc{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.toc a{text-decoration:none;color:#d9e8ef;border:1px solid #39454f;background:#0d141a;padding:8px;border-radius:8px;text-align:center;font-size:13px}@media(max-width:600px){.legendGrid,.quick,.winpath,.toc{grid-template-columns:1fr}.shell{padding-left:8px;padding-right:8px}.hero,.card{border-radius:12px}.hero{padding:15px}.card{padding:14px}.winpath{grid-template-columns:repeat(2,1fr)}.stickyBack{gap:6px}.back{padding:12px 8px;font-size:13px}.back.secondary{min-width:94px}}
 </style>
 </head>
 <body>
@@ -14,14 +14,32 @@
   <section class="hero">
     <small>Telengard: Reforged</small>
     <h1>How to Play</h1>
-    <p>A quick guide to surviving the dungeon and winning the game.</p>
+    <p>Everything you need to understand the game in a few minutes.</p>
     <div class="goal">
       <strong>Your Goal</strong>
       Descend through all <b>20 dungeon floors</b>, grow powerful enough to survive the guardians, defeat the <b>Star Warden</b> on Floor 20, and recover the <b>Star of Telengard</b>. Claiming the Star completes the expedition.
+      <div class="winpath"><div><b>1</b>Explore</div><div><b>2</b>Level Up</div><div><b>3</b>Reach Floor 20</div><div><b>4</b>Claim the Star</div></div>
     </div>
   </section>
 
   <section class="card">
+    <h2>30-second quick start</h2>
+    <div class="quick">
+      <div class="step"><b>Move</b><br>Tap an explored tile on the map. Your character automatically walks there.</div>
+      <div class="step"><b>Explore</b><br>Find treasure, fountains, altars, portals, and the stairs leading deeper.</div>
+      <div class="step"><b>Fight</b><br>Use Attack, Power, Spellbook, Guard, Potions, or Flee when monsters appear.</div>
+      <div class="step"><b>Grow</b><br>Earn XP from monsters. Every level unlocks <b>4 stronger spells</b>.</div>
+      <div class="step"><b>Prepare</b><br>Spend gold in Town on potions, weapon upgrades, armor, and recovery.</div>
+      <div class="step"><b>Win</b><br>Defeat the final guardian on Floor 20 and recover the Star of Telengard.</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Jump to</h2>
+    <div class="toc"><a href="#loop">Basic Loop</a><a href="#combat">Combat</a><a href="#magic">Magic</a><a href="#symbols">Symbols</a><a href="#death">Death</a><a href="#strategy">Strategy</a></div>
+  </section>
+
+  <section class="card" id="loop">
     <h2>The basic loop</h2>
     <div class="steps">
       <div class="step"><b>1. Explore.</b> Tap an explored walkable tile on the dungeon map and your adventurer will automatically walk toward it. On desktop you can also use WASD or the arrow keys.</div>
@@ -33,7 +51,7 @@
     </div>
   </section>
 
-  <section class="card">
+  <section class="card" id="combat">
     <h2>Combat</h2>
     <h3>Attack</h3><p class="muted">A reliable physical attack based mainly on your Strength and weapon.</p>
     <h3>Power</h3><p class="muted">A heavier physical strike that deals more damage.</p>
@@ -43,22 +61,24 @@
     <h3>Flee</h3><p class="muted">Attempts to escape a normal monster. Bosses cannot be escaped.</p>
   </section>
 
-  <section class="card">
+  <section class="card" id="magic">
     <h2>Magic & leveling</h2>
     <p>You begin at <b>Level 1</b> with four Level 1 spells. When you reach Level 2, you keep those spells and gain four Level 2 spells. Unlocks are cumulative all the way to Level 20.</p>
     <p class="tip">Higher spell tiers become progressively stronger in damage, healing, barriers, control, and dungeon-revealing effects. Mana cost rises with their power.</p>
     <p>The <b>Arcanist</b> is the strongest pure magic user. Vanguard and Wayfinder characters can still use the same spell progression.</p>
   </section>
 
-  <section class="card">
-    <h2>What you will find</h2>
+  <section class="card" id="symbols">
+    <h2>Dungeon symbols</h2>
     <div class="legendGrid">
+      <div class="legend"><span class="symbol">♞</span><b>You</b><br><span class="muted">Your current position.</span></div>
       <div class="legend"><span class="symbol">▣</span><b>Treasure</b><br><span class="muted">Gold and possible equipment upgrades.</span></div>
       <div class="legend"><span class="symbol">♒</span><b>Fountain</b><br><span class="muted">Restores health and mana.</span></div>
       <div class="legend"><span class="symbol">✥</span><b>Altar</b><br><span class="muted">Ancient magical locations with special effects.</span></div>
       <div class="legend"><span class="symbol">◉</span><b>Portal</b><br><span class="muted">Teleports you elsewhere on the current floor.</span></div>
       <div class="legend"><span class="symbol">▼</span><b>Stairs Down</b><br><span class="muted">Descend to the next dungeon floor.</span></div>
       <div class="legend"><span class="symbol">▲</span><b>Stairs Up</b><br><span class="muted">Return to the previous floor.</span></div>
+      <div class="legend"><span class="symbol">☠</span><b>Monster</b><br><span class="muted">Combat begins when an encounter triggers.</span></div>
     </div>
   </section>
 
@@ -67,7 +87,7 @@
     <p>Gold can be spent in the Town Refuge on healing potions, weapon improvements, armor improvements, and full recovery. Stronger equipment becomes increasingly important as monsters scale up on deeper floors.</p>
   </section>
 
-  <section class="card">
+  <section class="card" id="death">
     <h2>Death & game modes</h2>
     <p><b>Adventurer mode:</b> defeat returns you to your most recent checkpoint with some penalties, allowing the expedition to continue.</p>
     <p><b>Classic mode:</b> death ends the run.</p>
@@ -78,7 +98,7 @@
     <p>Every new expedition creates a fresh randomized set of <b>20 dungeon floors</b>. Choosing Continue preserves the exact dungeon and exploration progress from your saved expedition.</p>
   </section>
 
-  <section class="card">
+  <section class="card" id="strategy">
     <h2>Good first-run strategy</h2>
     <div class="steps">
       <div class="step">Explore nearby rooms before rushing downstairs so you can collect gold, equipment, and recovery opportunities.</div>
@@ -87,8 +107,7 @@
       <div class="step">Watch the Chronicle while moving—the latest dungeon events appear there.</div>
     </div>
   </section>
-
-  <a class="back" href="./">Return to the Game</a>
 </div>
+<div class="stickyBack"><a class="back" href="./">Return to Game</a><a class="back secondary" href="#top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false">Top</a></div>
 </body>
 </html>
