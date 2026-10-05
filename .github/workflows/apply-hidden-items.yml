@@ -1,0 +1,52 @@
+name: Apply hidden item discovery rules
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-hidden-items.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Hide special items until encountered
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text()
+
+          old = "if(c.type!=='floor'&&c.type!=='wall')d.innerHTML='<span class=\"tileIcon\">'+objectIcon(c.type)+'</span>'"
+          new = "if(c.visited&&c.type!=='floor'&&c.type!=='wall')d.innerHTML='<span class=\"tileIcon\">'+objectIcon(c.type)+'</span>'"
+          if old not in s:
+              raise SystemExit('renderLocal target not found')
+          s = s.replace(old, new, 1)
+
+          old = "d.classList.add(c.type==='wall'?'wall':(['floor'].includes(c.type)?'floor':'special'));if(c.visited)d.classList.add('visited')"
+          new = "d.classList.add(c.type==='wall'?'wall':(c.type==='floor'||!c.visited?'floor':'special'));if(c.visited)d.classList.add('visited')"
+          if old not in s:
+              raise SystemExit('renderAtlas target not found')
+          s = s.replace(old, new, 1)
+
+          old = "Bright stone = traveled path · dark stone = glimpsed nearby · blue = you · black = unexplored"
+          new = "Bright stone = traveled path · dark stone = glimpsed nearby · gold = encountered feature · blue = you · black = unexplored"
+          if old not in s:
+              raise SystemExit('atlas legend target not found')
+          s = s.replace(old, new, 1)
+
+          p.write_text(s)
+          PY
+      - name: Commit game update
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git diff --cached --quiet && exit 0
+          git commit -m "Hide dungeon items until encountered"
+          git push
