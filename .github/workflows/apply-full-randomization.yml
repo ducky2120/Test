@@ -1,0 +1,45 @@
+name: Apply full dungeon randomization
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-full-randomization.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Randomize all floor generation
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+          p=Path('index.html')
+          s=p.read_text()
+          old=re.search(r"function makeFloor\(f\)\{.*?\}function ensureFloor\(f\)\{",s,re.S)
+          if not old:
+              raise SystemExit('makeFloor block not found')
+          new=r'''function makeFloor(f){const r=rng(seedFor(f)),cells={};for(let y=0;y<SIZE;y++)for(let x=0;x<SIZE;x++)cells[key(x,y)]={type:'wall',seen:false,visited:false,used:false};const rooms=[];function carveRoom(x,y,w,h){for(let yy=y;yy<y+h;yy++)for(let xx=x;xx<x+w;xx++)if(xx>0&&yy>0&&xx<SIZE-1&&yy<SIZE-1)cells[key(xx,yy)].type='floor';rooms.push({x,y,w,h,cx:Math.floor(x+w/2),cy:Math.floor(y+h/2)})}function corridor(a,b){let x=a.cx,y=a.cy;if(r()<.5){while(x!==b.cx){cells[key(x,y)].type='floor';x+=Math.sign(b.cx-x)}while(y!==b.cy){cells[key(x,y)].type='floor';y+=Math.sign(b.cy-y)}}else{while(y!==b.cy){cells[key(x,y)].type='floor';y+=Math.sign(b.cy-y)}while(x!==b.cx){cells[key(x,y)].type='floor';x+=Math.sign(b.cx-x)}}cells[key(b.cx,b.cy)].type='floor'}const targetRooms=7+Math.floor(r()*8);let attempts=0;while(rooms.length<targetRooms&&attempts++<180){const w=3+Math.floor(r()*5),h=3+Math.floor(r()*5),x=1+Math.floor(r()*(SIZE-w-2)),y=1+Math.floor(r()*(SIZE-h-2));let overlap=false;for(const rm of rooms)if(x<rm.x+rm.w+1&&x+w+1>rm.x&&y<rm.y+rm.h+1&&y+h+1>rm.y){overlap=true;break}if(!overlap)carveRoom(x,y,w,h)}if(!rooms.length)carveRoom(8,8,5,5);for(let i=1;i<rooms.length;i++){const candidates=rooms.slice(0,i),to=candidates[Math.floor(r()*candidates.length)];corridor(rooms[i],to)}for(let i=0;i<Math.floor(rooms.length/3);i++){const a=rooms[Math.floor(r()*rooms.length)],b=rooms[Math.floor(r()*rooms.length)];if(a!==b)corridor(a,b)}const floors=[];for(let y=1;y<SIZE-1;y++)for(let x=1;x<SIZE-1;x++)if(cells[key(x,y)].type==='floor')floors.push([x,y]);function takeFar(from){let best=floors[0],bestD=-1;for(const p of floors){const d=Math.abs(p[0]-from[0])+Math.abs(p[1]-from[1]);if(d>bestD){best=p;bestD=d}}return best}const start=floors[Math.floor(r()*floors.length)],exit=takeFar(start);cells[key(start[0],start[1])].start=true;if(f>1)cells[key(start[0],start[1])].type='stairsUp';cells[key(exit[0],exit[1])].type=f===MAX_FLOOR?'altar':'stairsDown';function place(type,n){let placed=0,tries=0;while(placed<n&&tries++<300){const p=floors[Math.floor(r()*floors.length)],c=cells[key(p[0],p[1])];if(c.type==='floor'&&!c.start){c.type=type;placed++}}}place('chest',3+Math.floor(r()*7));place('fountain',1+Math.floor(r()*5));place('altar',1+Math.floor(r()*4));place('portal',Math.floor(r()*4));return cells}function ensureFloor(f){'''
+          s=s[:old.start()]+new+s[old.end():]
+          # ensureFloor got its opening brace consumed by replacement; fix doubled body prefix if needed
+          s=s.replace("function ensureFloor(f){if(!state.maps[f])state.maps[f]=makeFloor(f);return state.maps[f]}","function ensureFloor(f){if(!state.maps[f])state.maps[f]=makeFloor(f);return state.maps[f]}")
+          # add helpers before newState
+          anchor='function newState(name,cls,mode)'
+          helper="function findCellByType(f,type){const m=ensureFloor(f);for(const [k,c] of Object.entries(m))if(c.type===type){const [x,y]=k.split(',').map(Number);return{x,y}}return null}function findStart(f){const m=ensureFloor(f);for(const [k,c] of Object.entries(m))if(c.start){const [x,y]=k.split(',').map(Number);return{x,y}}return{x:10,y:10}}"
+          s=s.replace(anchor,helper+anchor,1)
+          # transition positions become generated stair positions
+          s=s.replace("state.floor++;state.deepest=Math.max(state.deepest,state.floor);state.x=10;state.y=10;state.checkpoint={floor:state.floor,x:10,y:10};revealAround();", "state.floor++;state.deepest=Math.max(state.deepest,state.floor);const up=findCellByType(state.floor,'stairsUp')||findStart(state.floor);state.x=up.x;state.y=up.y;state.checkpoint={floor:state.floor,x:state.x,y:state.y};revealAround();")
+          s=s.replace("state.floor--;state.x=10;state.y=SIZE-3;revealAround();", "state.floor--;const down=findCellByType(state.floor,'stairsDown')||findStart(state.floor);state.x=down.x;state.y=down.y;revealAround();")
+          # fresh run starts at each generated floor's randomized start instead of fixed center
+          s=s.replace("function bootGame(s){state=migrate(s);ensureFloor(state.floor);revealAround();", "function bootGame(s){state=migrate(s);ensureFloor(state.floor);if(!state.maps[state.floor][key(state.x,state.y)]||state.maps[state.floor][key(state.x,state.y)].type==='wall'){const st=findStart(state.floor);state.x=st.x;state.y=st.y}revealAround();")
+          # randomize encounter odds per floor/run instead of identical formula only
+          s=s.replace("Math.random()<.11+state.floor*.006", "Math.random()<(.07+state.floor*.004+((seedFor(state.floor)%9)/100))")
+          p.write_text(s)
+      - name: Commit randomized generator
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Fully randomize dungeon floors, features and encounters" || exit 0
+          git push
