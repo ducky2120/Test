@@ -1,0 +1,53 @@
+name: Apply traps and interactive chests
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-traps-chests.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch dungeon traps and chest choices
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+
+          s=s.replace('.cell.floor,.cell.chest,.cell.fountain,.cell.altar,.cell.portal,.cell.stairsUp,.cell.stairsDown{','.cell.floor,.cell.chest,.cell.fountain,.cell.altar,.cell.portal,.cell.stairsUp,.cell.stairsDown,.cell.trap{')
+          s=s.replace('.cell.floor:before,.cell.chest:before,.cell.fountain:before,.cell.altar:before,.cell.portal:before,.cell.stairsUp:before,.cell.stairsDown:before{','.cell.floor:before,.cell.chest:before,.cell.fountain:before,.cell.altar:before,.cell.portal:before,.cell.stairsUp:before,.cell.stairsDown:before,.cell.trap:before{')
+          s=s.replace('.cell.floor:after,.cell.chest:after,.cell.fountain:after,.cell.altar:after,.cell.portal:after,.cell.stairsUp:after,.cell.stairsDown:after{','.cell.floor:after,.cell.chest:after,.cell.fountain:after,.cell.altar:after,.cell.portal:after,.cell.stairsUp:after,.cell.stairsDown:after,.cell.trap:after{')
+
+          old='<button id="discoveryContinue" class="btn">Continue</button></div></div>'
+          new='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><button id="discoveryContinue" class="btn">Continue</button><button id="discoveryAlt" class="btn hidden">Leave it</button></div></div></div>'
+          s=s.replace(old,new)
+
+          s=s.replace("place('portal',Math.floor(r()*4));return cells}","place('portal',Math.floor(r()*4));place('trap',2+Math.floor(r()*5));return cells}")
+
+          s=s.replace("stairsUp:'<svg viewBox=\"0 0 100 100\"><path d=\"M25 28h50v12H35v12h31v12H44v12h22v10H25z\" fill=\"#817662\" stroke=\"#29261f\" stroke-width=\"4\"/><path d=\"M72 72V30\" stroke=\"#f0c45d\" stroke-width=\"4\"/><path d=\"m64 38 8-9 8 9\" fill=\"none\" stroke=\"#f0c45d\" stroke-width=\"4\"/></svg>'","stairsUp:'<svg viewBox=\"0 0 100 100\"><path d=\"M25 28h50v12H35v12h31v12H44v12h22v10H25z\" fill=\"#817662\" stroke=\"#29261f\" stroke-width=\"4\"/><path d=\"M72 72V30\" stroke=\"#f0c45d\" stroke-width=\"4\"/><path d=\"m64 38 8-9 8 9\" fill=\"none\" stroke=\"#f0c45d\" stroke-width=\"4\"/></svg>',trap:'<svg viewBox=\"0 0 100 100\"><path d=\"M15 72 30 34l20 28 19-31 16 41Z\" fill=\"#8e2f26\" stroke=\"#2a0d0b\" stroke-width=\"5\"/><path d=\"M25 70 35 48l14 18 18-22 8 26Z\" fill=\"#d96c3c\"/></svg>'")
+
+          old="function showDiscovery(type,title,text,kicker){$('#discoveryKicker').textContent=kicker||'Discovery';$('#discoveryIcon').innerHTML=objectIcon(type);$('#discoveryTitle').textContent=title;$('#discoveryText').textContent=text;$('#discoveryOverlay').classList.remove('hidden')}function closeDiscovery(){$('#discoveryOverlay').classList.add('hidden');updateUI()}"
+          new="""function showDiscovery(type,title,text,kicker){$('#discoveryKicker').textContent=kicker||'Discovery';$('#discoveryIcon').innerHTML=objectIcon(type);$('#discoveryTitle').textContent=title;$('#discoveryText').textContent=text;$('#discoveryContinue').textContent='Continue';$('#discoveryAlt').classList.add('hidden');$('#discoveryContinue').onclick=closeDiscovery;$('#discoveryOverlay').classList.remove('hidden')}function closeDiscovery(){$('#discoveryOverlay').classList.add('hidden');$('#discoveryAlt').classList.add('hidden');updateUI()}function randomTrap(source){const roll=Math.random();let text='';if(roll<.42){const dmg=Math.max(2,Math.round(state.maxHp*(.10+Math.random()*.18))+Math.floor(state.floor*.8));state.hp=Math.max(1,state.hp-dmg);text='Hidden blades snap from the stone. You take '+dmg+' damage.';addLog('Trap! Hidden blades deal '+dmg+' damage.','bad')}else if(roll<.67){const drain=Math.min(state.mp,3+Math.floor(Math.random()*(5+state.floor)));state.mp-=drain;text='Arcane runes flare beneath you and drain '+drain+' mana.';addLog('A rune trap drains '+drain+' mana.','bad')}else if(roll<.86){const lost=Math.min(state.gold,5+Math.floor(Math.random()*(10+state.floor*2)));state.gold-=lost;text='A concealed mechanism steals '+lost+' gold into the walls.';addLog('A thief trap steals '+lost+' gold.','bad')}else{const floors=Object.entries(ensureFloor(state.floor)).filter(([k,c])=>c.type!=='wall');const pick=floors[Math.floor(Math.random()*floors.length)];if(pick){const [x,y]=pick[0].split(',').map(Number);state.x=x;state.y=y;revealAround()}text='A teleport rune flashes and throws you somewhere else on the floor.';addLog('A teleport trap hurls you across the dungeon.','bad')}showDiscovery('trap',source||'Trap!',text,'Danger')}function chestTreasure(){const lines=[];const gold=12+Math.floor(Math.random()*(22+state.floor*5));state.gold+=gold;lines.push(gold+' gold');const r=Math.random();if(r<.22){state.potions++;lines.push('Healing Potion')}else if(r<.38){state.weapon++;lines.push('Weapon +1')}else if(r<.54){state.armor++;lines.push('Armor +1')}else if(r<.68){const candidates=SPELLS.filter(sp=>!spellUnlocked(sp)&&sp.level<=Math.min(20,state.level+3));if(candidates.length){const sp=candidates[Math.floor(Math.random()*candidates.length)];state.learnedSpells.push(sp.name);lines.push('Spell scroll: '+sp.name)}}else if(r<.82){state.treasures++;lines.push('Rare treasure')}showDiscovery('chest','Treasure!','Inside you find '+lines.join(' · ')+'.','Chest')}function openChest(c){c.used=true;state.chests++;const r=Math.random();if(r<.53){addLog('You open the chest and find treasure.','gold');chestTreasure()}else if(r<.75){addLog('The chest was trapped!','bad');randomTrap('Chest Trap!')}else if(r<.88){addLog('The chest is empty.','muted');showDiscovery('chest','Empty Chest','Dust, splinters, and nothing else.','Chest')}else{addLog('The chest snaps open — it is a Mimic!','bad');$('#discoveryOverlay').classList.add('hidden');startEncounter(false);state.combat.name='Mimic';state.combat.maxHp=Math.round(state.combat.maxHp*1.18);state.combat.hp=state.combat.maxHp;state.combat.atk=Math.round(state.combat.atk*1.08);state.combat.xp=Math.round(state.combat.xp*1.25);updateCombat()}updateUI()}function promptChest(c){$('#discoveryKicker').textContent='Discovery';$('#discoveryIcon').innerHTML=objectIcon('chest');$('#discoveryTitle').textContent='You Found a Chest';$('#discoveryText').textContent='The chest is closed. It could contain treasure — or something worse. Do you want to open it?';$('#discoveryContinue').textContent='Open chest';$('#discoveryAlt').textContent='Leave it';$('#discoveryAlt').classList.remove('hidden');$('#discoveryContinue').onclick=()=>openChest(c);$('#discoveryAlt').onclick=closeDiscovery;$('#discoveryOverlay').classList.remove('hidden')}"""
+          if old not in s: raise SystemExit('showDiscovery target not found')
+          s=s.replace(old,new)
+
+          old="else if(!c.used&&c.type==='chest'){c.used=true;state.chests++;const g=10+Math.floor(Math.random()*20)+state.floor*4;state.gold+=g;let extra='';if(Math.random()<.25){state.weapon++;extra=' You also find a stronger weapon.';addLog('You find a stronger weapon.','good')}addLog('Treasure! '+g+' gold.','gold');showDiscovery('chest','Treasure Chest','You open the chest and find '+g+' gold.'+extra,'Treasure')}"
+          new="else if(!c.used&&c.type==='chest'){promptChest(c)}else if(!c.used&&c.type==='trap'){c.used=true;randomTrap('Hidden Trap!')}"
+          if old not in s: raise SystemExit('chest target not found')
+          s=s.replace(old,new)
+
+          s=s.replace("desc={stairsDown:'Stairs descend into colder darkness.'","desc={trap:'Something about the floor feels wrong.',stairsDown:'Stairs descend into colder darkness.'")
+
+          s=s.replace("$('#discoveryContinue').onclick=closeDiscovery;","")
+          p.write_text(s)
+          PY
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Add hidden traps and interactive randomized chests" || exit 0
+          git push
