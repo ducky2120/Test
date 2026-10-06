@@ -1,0 +1,32 @@
+name: Fix discovery Continue button
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-discovery-continue.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore discovery Continue behavior
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+          old="function showDiscovery(type,title,text,kicker){$('#discoveryKicker').textContent=kicker||'Discovery';$('#discoveryIcon').innerHTML=objectIcon(type);$('#discoveryTitle').textContent=title;$('#discoveryText').textContent=text;$('#discoveryContinue').textContent='Continue';$('#discoveryAlt').classList.add('hidden');$('#discoveryOverlay').classList.remove('hidden')}function closeDiscovery(){$('#discoveryOverlay').classList.add('hidden');$('#discoveryAlt').classList.add('hidden');updateUI()}"
+          new="function showDiscovery(type,title,text,kicker){$('#discoveryKicker').textContent=kicker||'Discovery';$('#discoveryIcon').innerHTML=objectIcon(type);$('#discoveryTitle').textContent=title;$('#discoveryText').textContent=text;$('#discoveryContinue').textContent='Continue';$('#discoveryAlt').classList.add('hidden');$('#discoveryContinue').onclick=closeDiscovery;$('#discoveryAlt').onclick=closeDiscovery;$('#discoveryOverlay').classList.remove('hidden')}function closeDiscovery(){$('#discoveryOverlay').classList.add('hidden');$('#discoveryAlt').classList.add('hidden');$('#discoveryContinue').onclick=closeDiscovery;updateUI()}"
+          if old not in s:
+              raise SystemExit('showDiscovery target not found')
+          s=s.replace(old,new,1)
+          p.write_text(s)
+          PY
+      - name: Commit fix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Fix Continue button on trap and discovery screens" || exit 0
+          git push
