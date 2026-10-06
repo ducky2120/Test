@@ -1,0 +1,52 @@
+name: Apply procedural game audio
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-audio.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Wire audio engine into game
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+
+          s=s.replace('.title small{color:#83d9ff;text-transform:uppercase;letter-spacing:.12em}', '.title small{color:#83d9ff;text-transform:uppercase;letter-spacing:.12em}.audioControls{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.audioBtn{border:1px solid #79551f;background:#0d151c;color:#efc871;border-radius:8px;padding:6px 9px;font-weight:700;cursor:pointer}.audioBtn.off{opacity:.48;color:#aab3bc}')
+
+          old='<div class="shell"><div class="title"><div><small>A modern dungeon crawler inspired by the 1982 classic</small><h1>TELENGARD: REFORGED</h1></div><div class="muted">See only what is around you · autosave</div></div>'
+          new='<div class="shell"><div class="title"><div><small>A modern dungeon crawler inspired by the 1982 classic</small><h1>TELENGARD: REFORGED</h1></div><div><div class="muted">See only what is around you · autosave</div><div class="audioControls"><button id="musicToggle" class="audioBtn" type="button">♫ Music</button><button id="sfxToggle" class="audioBtn" type="button">🔊 SFX</button></div></div></div>'
+          if old in s: s=s.replace(old,new)
+
+          s=s.replace('<script>\n(function(){', '<script src="audio.js"></script>\n<script>\n(function(){')
+
+          s=s.replace("function showDiscovery(type,title,text,kicker){", "function showDiscovery(type,title,text,kicker){if(window.gameAudio){const map={chest:'treasure',fountain:'fountain',portal:'portal',trap:'trap',stairsDown:'stairs',stairsUp:'stairs'};if(map[type])gameAudio.sfx(map[type])}")
+          s=s.replace("function promptChest(c){", "function promptChest(c){if(window.gameAudio)gameAudio.sfx('chest');")
+          s=s.replace("function randomTrap(source){", "function randomTrap(source){if(window.gameAudio)gameAudio.sfx('trap');")
+          s=s.replace("function startEncounter(boss){state.combat=monsterForFloor(!!boss);", "function startEncounter(boss){state.combat=monsterForFloor(!!boss);if(window.gameAudio){gameAudio.mode(true);gameAudio.sfx('monster')}")
+          s=s.replace("function updateCombat(){const b=$('#combat');if(!state||!state.combat){b.classList.add('hidden');return}", "function updateCombat(){const b=$('#combat');if(!state||!state.combat){b.classList.add('hidden');if(window.gameAudio)gameAudio.mode(false);return}")
+          s=s.replace("function enemyTurn(){if(!state.combat)return;if(Math.random()>enemyHitChance()){", "function enemyTurn(){if(!state.combat)return;if(Math.random()>enemyHitChance()){if(window.gameAudio)gameAudio.sfx('miss');")
+          s=s.replace("if(dmg>0){state.hp-=dmg;", "if(dmg>0){state.hp-=dmg;if(window.gameAudio)gameAudio.sfx('hit');")
+          s=s.replace("if(k==='attack'||k==='power'){const power=k==='power',label=power?'Power Strike':'Attack';", "if(k==='attack'||k==='power'){const power=k==='power',label=power?'Power Strike':'Attack';if(window.gameAudio)gameAudio.sfx(power?'power':'attack');")
+          s=s.replace("if(Math.random()>playerHitChance(power)){const msg=", "if(Math.random()>playerHitChance(power)){if(window.gameAudio)gameAudio.sfx('miss');const msg=")
+          s=s.replace("function castSpell(sp){if(!spellUnlocked(sp)||state.mp<sp.cost)return;", "function castSpell(sp){if(!spellUnlocked(sp)||state.mp<sp.cost)return;if(window.gameAudio)gameAudio.sfx('spell');")
+          s=s.replace("addLog('LEVEL UP! Level '+state.level+': four new spells unlocked.','gold')", "addLog('LEVEL UP! Level '+state.level+': four new spells unlocked.','gold');if(window.gameAudio)gameAudio.sfx('level')")
+
+          marker="$('#continueBtn').classList.toggle('hidden',!load());})();"
+          inject="""const musicToggle=$('#musicToggle'),sfxToggle=$('#sfxToggle');function syncAudioButtons(){if(!window.gameAudio)return;musicToggle.classList.toggle('off',!gameAudio.musicOn);sfxToggle.classList.toggle('off',!gameAudio.sfxOn);musicToggle.textContent=gameAudio.musicOn?'♫ Music':'♫ Music Off';sfxToggle.textContent=gameAudio.sfxOn?'🔊 SFX':'🔇 SFX Off'}musicToggle.onclick=()=>{if(!window.gameAudio)return;gameAudio.ensure();gameAudio.setMusic(!gameAudio.musicOn);syncAudioButtons()};sfxToggle.onclick=()=>{if(!window.gameAudio)return;gameAudio.ensure();gameAudio.setSfx(!gameAudio.sfxOn);syncAudioButtons()};syncAudioButtons();$('#continueBtn').classList.toggle('hidden',!load());})();"""
+          if marker not in s: raise SystemExit('audio hook marker not found')
+          s=s.replace(marker,inject)
+          p.write_text(s)
+          PY
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Add procedural background music and sound effects" || exit 0
+          git push
