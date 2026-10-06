@@ -1,0 +1,50 @@
+name: Add combat feedback and misses
+on:
+  push:
+    paths:
+      - '.github/workflows/add-combat-feedback-misses.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch combat UI and hit/miss logic
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+
+          s=s.replace("#combat:not(.hidden) .actions button{min-height:56px;font-size:15px}","#combat:not(.hidden) .actions button{min-height:56px;font-size:15px}.combatFeedback{width:min(540px,92vw);min-height:52px;margin:8px auto 4px;padding:10px 14px;border:1px solid #6f5129;border-radius:10px;background:#07090bcf;text-align:center;font-weight:700;letter-spacing:.02em}.combatFeedback.hit{color:#ff8a7f}.combatFeedback.good{color:#8ee2b3}.combatFeedback.miss{color:#9fdcff}")
+
+          old='<div class="bar"><i id="enemyBar" class="hp"></i></div><div class="actions">'
+          new='<div class="bar"><i id="enemyBar" class="hp"></i></div><div id="combatFeedback" class="combatFeedback">Choose an action.</div><div class="actions">'
+          if old not in s: raise SystemExit('combat markup target not found')
+          s=s.replace(old,new,1)
+
+          old="function startEncounter(boss){state.combat=monsterForFloor(!!boss);addLog('A Level '+state.combat.level+' '+state.combat.name+' attacks!','bad');updateCombat()}"
+          new="function setCombatFeedback(msg,kind){const el=$('#combatFeedback');if(!el)return;el.textContent=msg;el.className='combatFeedback '+(kind||'')}function startEncounter(boss){state.combat=monsterForFloor(!!boss);addLog('A Level '+state.combat.level+' '+state.combat.name+' attacks!','bad');updateCombat();setCombatFeedback('The '+state.combat.name+' blocks your path.','')}"
+          if old not in s: raise SystemExit('startEncounter target not found')
+          s=s.replace(old,new,1)
+
+          old="function heroDamage(power){return Math.max(1,state.weapon+Math.floor(state.stats.str/3)+Math.floor(Math.random()*6)+1)*(power?1.65:1)}function enemyTurn(){if(!state.combat)return;let dmg=Math.max(1,state.combat.atk-state.combat.weaken+Math.floor(Math.random()*5)-state.armor-Math.floor(state.stats.dex/6));if(state.combat.playerWard>0){const a=Math.min(dmg,state.combat.playerWard);state.combat.playerWard-=a;dmg-=a;addLog('Your barrier absorbs '+a+' damage.','good')}if(dmg>0){state.hp-=dmg;addLog(state.combat.name+' hits you for '+dmg+'.','bad')}if(state.hp<=0)die()}function resolveHit(dmg,label){const f=state.combat;f.hp-=Math.round(dmg);addLog(label+' deals '+Math.round(dmg)+' damage.','good');if(f.hp<=0){"
+          new="function heroDamage(power){return Math.max(1,state.weapon+Math.floor(state.stats.str/3)+Math.floor(Math.random()*6)+1)*(power?1.65:1)}function playerHitChance(power){const dex=(state.stats.dex||10);return Math.min(.95,Math.max(.62,.80+dex*.006-state.floor*.003-(power?.08:0)))}function enemyHitChance(){const dex=(state.stats.dex||10);const lvl=state.combat?.level||state.floor;return Math.min(.94,Math.max(.50,.72+lvl*.008-dex*.01))}function enemyTurn(){if(!state.combat)return;if(Math.random()>enemyHitChance()){const msg=state.combat.name+' misses you.';addLog(msg,'good');setCombatFeedback(msg,'miss');return}let dmg=Math.max(1,state.combat.atk-state.combat.weaken+Math.floor(Math.random()*5)-state.armor-Math.floor(state.stats.dex/6));if(state.combat.playerWard>0){const a=Math.min(dmg,state.combat.playerWard);state.combat.playerWard-=a;dmg-=a;addLog('Your barrier absorbs '+a+' damage.','good')}if(dmg>0){state.hp-=dmg;const msg=state.combat.name+' hits you for '+dmg+' damage.';addLog(msg,'bad');setCombatFeedback(msg,'hit')}else setCombatFeedback(state.combat.name+' cannot break through your defense.','good');if(state.hp<=0)die()}function resolveHit(dmg,label){const f=state.combat;f.hp-=Math.round(dmg);addLog(label+' deals '+Math.round(dmg)+' damage.','good');setCombatFeedback(label+' hits '+f.name+' for '+Math.round(dmg)+' damage.','good');if(f.hp<=0){"
+          if old not in s: raise SystemExit('enemyTurn target not found')
+          s=s.replace(old,new,1)
+
+          old="function playerAction(k){if(!state.combat)return;if(k==='attack'){if(resolveHit(heroDamage(false),'Attack'))return updateUI();enemyTurn()}else if(k==='power'){if(resolveHit(heroDamage(true),'Power Strike'))return updateUI();enemyTurn()}else if(k==='guard'){state.combat.playerWard+=8+state.level*2;addLog('You brace behind your guard.','good');enemyTurn()}else if(k==='potion'&&state.potions>0){state.potions--;state.hp=Math.min(state.maxHp,state.hp+Math.ceil(state.maxHp*.45));enemyTurn()}else if(k==='flee'){if(state.combat.boss||Math.random()>.4+state.stats.dex*.02)enemyTurn();else{addLog('You escape.','good');state.combat=null}}updateUI()}"
+          new="function playerAction(k){if(!state.combat)return;if(k==='attack'||k==='power'){const power=k==='power',label=power?'Power Strike':'Attack';if(Math.random()>playerHitChance(power)){const msg='Your '+label.toLowerCase()+' misses '+state.combat.name+'.';addLog(msg,'muted');setCombatFeedback(msg,'miss');enemyTurn()}else{if(resolveHit(heroDamage(power),label))return updateUI();enemyTurn()}}else if(k==='guard'){state.combat.playerWard+=8+state.level*2;addLog('You brace behind your guard.','good');setCombatFeedback('You raise your guard.','good');enemyTurn()}else if(k==='potion'&&state.potions>0){state.potions--;const before=state.hp;state.hp=Math.min(state.maxHp,state.hp+Math.ceil(state.maxHp*.45));setCombatFeedback('You recover '+(state.hp-before)+' health.','good');enemyTurn()}else if(k==='flee'){if(state.combat.boss||Math.random()>.4+state.stats.dex*.02){setCombatFeedback('You fail to escape.','miss');enemyTurn()}else{addLog('You escape.','good');state.combat=null}}updateUI()}"
+          if old not in s: raise SystemExit('playerAction target not found')
+          s=s.replace(old,new,1)
+
+          p.write_text(s)
+          PY
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Show combat damage and add random misses" || exit 0
+          git push
