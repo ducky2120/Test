@@ -1,0 +1,32 @@
+name: Center Continue button
+on:
+  push:
+    paths:
+      - '.github/workflows/center-continue-button.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Center single Continue action
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+          needle='.discoveryCard .btn{width:100%;min-height:54px}'
+          repl=needle+".discoveryCard div:has(>#discoveryAlt.hidden){grid-template-columns:1fr!important;justify-items:center}.discoveryCard div:has(>#discoveryAlt.hidden)>#discoveryContinue{width:min(280px,82%)!important;justify-self:center}"
+          if needle not in s:
+              raise SystemExit('CSS target not found')
+          s=s.replace(needle,repl,1)
+          p.write_text(s)
+          PY
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Center Continue button on discovery screens" || exit 0
+          git push
