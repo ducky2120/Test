@@ -1,0 +1,32 @@
+name: Rebalance Power attack
+on:
+  push:
+    paths:
+      - '.github/workflows/rebalance-power-attack.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Rebalance Attack and Power
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+          old="function heroDamage(power){return Math.max(1,state.weapon+Math.floor(state.stats.str/3)+Math.floor(Math.random()*6)+1)*(power?1.65:1)}function playerHitChance(power){const dex=(state.stats.dex||10);return Math.min(.95,Math.max(.62,.80+dex*.006-state.floor*.003-(power?.08:0)))}"
+          new="function heroDamage(power){return Math.max(1,state.weapon+Math.floor(state.stats.str/3)+Math.floor(Math.random()*6)+1)*(power?1.8:1)}function playerHitChance(power){const dex=(state.stats.dex||10);return Math.min(.95,Math.max(power?.52:.68,.84+dex*.006-state.floor*.003-(power?.18:0)))}"
+          if old not in s:
+              raise SystemExit('Power balance target not found')
+          s=s.replace(old,new)
+          p.write_text(s)
+          PY
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Rebalance Power as risky heavy attack" || exit 0
+          git push
