@@ -1,0 +1,32 @@
+name: Put exploration map above dungeon on mobile
+on:
+  push:
+    paths:
+      - '.github/workflows/mobile-map-above-dungeon.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Improve mobile dungeon map layout
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+          old=".mapwrap{padding:8px;display:flex;flex-direction:column}.roomline{order:-1;position:relative;z-index:14;margin:0 0 10px;padding:10px 8px 11px;border:1px solid #6c5027;border-radius:10px;background:linear-gradient(180deg,#15130fdd,#080908e8);box-shadow:0 6px 18px #0008}.roomline h3{margin:0 0 4px;font-size:18px}.roomline p{font-size:13px;line-height:1.35}.mapframe{order:0;padding:6px}.atlasWrap{order:1}.map{gap:0;padding:8px}"
+          new=".mapwrap{padding:8px;display:flex;flex-direction:column}.roomline{display:none}.atlasWrap{order:-1;margin:0 0 8px;padding:8px}.atlasHead{margin-bottom:5px}.atlasLegend{font-size:10px;line-height:1.25;margin-top:4px}.mapframe{order:0;padding:6px}.map{gap:0;padding:8px}"
+          if old not in s:
+              raise SystemExit('mobile layout target not found')
+          s=s.replace(old,new,1)
+          p.write_text(s)
+          PY
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Show exploration map above dungeon on mobile" || exit 0
+          git push
