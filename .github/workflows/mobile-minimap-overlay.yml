@@ -1,0 +1,32 @@
+name: Mobile minimap overlay
+on:
+  push:
+    paths:
+      - '.github/workflows/mobile-minimap-overlay.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Make exploration map a mobile HUD overlay
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+          old=".mapwrap{padding:8px;display:flex;flex-direction:column}.roomline{display:none}.atlasWrap{order:-1;margin:0 0 8px;padding:8px}.atlasHead{margin-bottom:5px}.atlasLegend{font-size:10px;line-height:1.25;margin-top:4px}.mapframe{order:0;padding:6px}.map{gap:0;padding:8px}"
+          new=".mapwrap{padding:8px;display:block;position:relative}.roomline{display:none}.mapframe{position:relative;padding:6px}.map{gap:0;padding:8px}.atlasWrap{position:absolute;z-index:20;top:16px;right:16px;width:112px;margin:0;padding:5px;border:1px solid #a87936;border-radius:9px;background:#020406d9;box-shadow:0 6px 18px #000b;backdrop-filter:blur(2px);pointer-events:none}.atlasHead{display:none}.atlas{gap:0;padding:2px;border-color:#6a5127;background:#0009}.atlasLegend{display:none}.atlasCell.current{box-shadow:0 0 4px #55d8ff}.atlasCell.seen.floor{background:#706f68}.atlasCell.seen.wall{background:#202427}.atlasCell.seen.special{background:#b08c3c}.atlasCell.visited{background:#b8ae91}"
+          if old not in s:
+              raise SystemExit('mobile map CSS marker not found')
+          s=s.replace(old,new)
+          p.write_text(s)
+          PY
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Overlay compact exploration minimap on mobile dungeon" || exit 0
+          git push
